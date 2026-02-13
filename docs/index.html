@@ -1118,9 +1118,16 @@ pnpm content:dry-run            # Preview what would build</code></pre>
         <div class="port-table">
           <table>
             <tr><th>Command</th><th>What it does</th></tr>
+            <tr><td colspan="2"><strong>Development</strong></td></tr>
             <tr><td><code>pnpm dev</code></td><td>Dev server with hot reload</td></tr>
+            <tr><td><code>pnpm dev:website</code></td><td>Dev server on port 3000</td></tr>
+            <tr><td><code>pnpm dev:api</code></td><td>Dev server on port 3001</td></tr>
+            <tr><td><code>pnpm dev:dashboard</code></td><td>Dev server on port 3002</td></tr>
             <tr><td><code>pnpm build</code></td><td>Type-check + compile TypeScript</td></tr>
             <tr><td><code>pnpm start</code></td><td>Run production build</td></tr>
+            <tr><td><code>pnpm typecheck</code></td><td>TypeScript check only (no emit)</td></tr>
+            <tr><td><code>pnpm lint</code></td><td>Same as typecheck</td></tr>
+            <tr><td colspan="2"><strong>Testing</strong></td></tr>
             <tr><td><code>pnpm test</code></td><td>Run ALL tests (unit + E2E)</td></tr>
             <tr><td><code>pnpm test:unit</code></td><td>Unit/integration tests (Vitest)</td></tr>
             <tr><td><code>pnpm test:unit:watch</code></td><td>Unit tests in watch mode</td></tr>
@@ -1128,14 +1135,25 @@ pnpm content:dry-run            # Preview what would build</code></pre>
             <tr><td><code>pnpm test:e2e</code></td><td>E2E tests (kills ports &rarr; spawns servers &rarr; Playwright)</td></tr>
             <tr><td><code>pnpm test:e2e:headed</code></td><td>E2E with visible browser</td></tr>
             <tr><td><code>pnpm test:e2e:ui</code></td><td>E2E with Playwright UI mode</td></tr>
-            <tr><td><code>pnpm typecheck</code></td><td>TypeScript check only</td></tr>
+            <tr><td><code>pnpm test:e2e:chromium</code></td><td>E2E on Chromium only (fast)</td></tr>
+            <tr><td><code>pnpm test:e2e:report</code></td><td>Open last Playwright HTML report</td></tr>
+            <tr><td><code>pnpm test:kill-ports</code></td><td>Kill processes on test ports (4000, 4010, 4020)</td></tr>
+            <tr><td colspan="2"><strong>Test Servers</strong></td></tr>
+            <tr><td><code>pnpm dev:test:website</code></td><td>Test server on port 4000</td></tr>
+            <tr><td><code>pnpm dev:test:api</code></td><td>Test server on port 4010</td></tr>
+            <tr><td><code>pnpm dev:test:dashboard</code></td><td>Test server on port 4020</td></tr>
+            <tr><td colspan="2"><strong>Database</strong></td></tr>
             <tr><td><code>pnpm db:query &lt;name&gt;</code></td><td>Run a dev/test database query</td></tr>
             <tr><td><code>pnpm db:query:list</code></td><td>List all registered queries</td></tr>
+            <tr><td colspan="2"><strong>Content</strong></td></tr>
             <tr><td><code>pnpm content:build</code></td><td>Build all published MD &rarr; HTML</td></tr>
+            <tr><td><code>pnpm content:build:id &lt;id&gt;</code></td><td>Build a single article by ID</td></tr>
             <tr><td><code>pnpm content:list</code></td><td>List all articles</td></tr>
             <tr><td><code>pnpm content:dry-run</code></td><td>Preview what would build</td></tr>
+            <tr><td colspan="2"><strong>Monitoring &amp; Docker</strong></td></tr>
             <tr><td><code>pnpm ai:monitor</code></td><td>Live AI activity monitor (run in separate terminal)</td></tr>
             <tr><td><code>pnpm docker:optimize</code></td><td>Audit Dockerfile (use <code>/optimize-docker</code> in Claude)</td></tr>
+            <tr><td colspan="2"><strong>Utility</strong></td></tr>
             <tr><td><code>pnpm clean</code></td><td>Remove dist/, coverage/, test-results/</td></tr>
           </table>
         </div>
