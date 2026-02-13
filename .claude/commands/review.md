@@ -7,6 +7,17 @@ allowed-tools: Read, Grep, Glob, Bash(git diff:*)
 
 Review the current changes for:
 
+## Branch Check
+
+Verify the current branch context:
+
+```bash
+git branch --show-current
+```
+
+- If on `main` or `master`: warn — "You're reviewing changes on main. Consider working on a feature branch."
+- Report which branch is being reviewed in the output header
+
 ## Context
 - Current diff: !`git diff HEAD`
 - Staged changes: !`git diff --cached`
@@ -21,6 +32,15 @@ Review the current changes for:
 6. **Database** — Using centralized wrapper, no direct connections
 7. **API Versioning** — All endpoints use `/api/v1/` prefix
 
+## RuleCatch Report
+
+After completing the manual review, query RuleCatch for automated violations on the changed files:
+
+- If the RuleCatch MCP server is available: query for violations on the files in the current diff
+- Include results in a dedicated section of the review output (see format below)
+- This catches pattern-based violations the manual review might miss
+- If no MCP available: suggest — "Ask `RuleCatch, what violations happened today?` for automated checks"
+
 ## Output Format
 
 For each issue found:
@@ -28,3 +48,10 @@ For each issue found:
 - **Severity**: 🔴 Critical | 🟡 Warning | 🔵 Info
 - **Issue**: Description
 - **Fix**: Suggested change
+
+### RuleCatch Violations
+| File | Rule | Severity | Details |
+|------|------|----------|---------|
+| ... | ... | ... | ... |
+
+If no RuleCatch violations: "RuleCatch: No violations detected"

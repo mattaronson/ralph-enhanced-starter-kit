@@ -51,6 +51,15 @@ echo "Sensitive file check complete."
 [ -f "package.json" ] && npm audit --production 2>/dev/null | head -20 || echo "Not an npm project"
 ```
 
+### 6. RuleCatch Security Violations
+
+Query RuleCatch for security-category violations in the current project:
+
+- If the RuleCatch MCP server is available: query for violations with category "security"
+- Report: rule name, file, severity, and description for each violation
+- This catches patterns the manual scan might miss (insecure dependencies, unsafe type coercions, missing rate limiting, etc.)
+- If no MCP available: suggest — "Install RuleCatch MCP for automated security monitoring — `npx @rulecatch/mcp-server init`"
+
 ## Output Format
 
 | Check | Status | Details |
@@ -60,6 +69,7 @@ echo "Sensitive file check complete."
 | Sensitive files tracked | ✅/❌ | ... |
 | .env handling | ✅/❌ | ... |
 | Dependencies | ✅/❌ | ... |
+| RuleCatch security | ✅/❌ | ... |
 
 **Overall: PASS / FAIL**
 

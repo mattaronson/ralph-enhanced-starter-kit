@@ -152,6 +152,20 @@ export interface ServiceConfig {
 }
 ```
 
+## Branch Safety Check
+
+Before scaffolding a new service, check the current branch:
+
+```bash
+git branch --show-current
+```
+
+- If on `main` or `master`: **STOP.** Warn the user and suggest:
+  - `/worktree feat-<service-name>` — creates isolated branch + directory (recommended)
+  - `git checkout -b feat/<service-name>` — creates a branch in the current directory
+- If on a feature branch: proceed
+- If not a git repo: proceed (skip this check)
+
 ## After Creating — Checklist
 
 - [ ] Directory structure matches template
@@ -165,3 +179,11 @@ export interface ServiceConfig {
 - [ ] Service added to project-docs/ARCHITECTURE.md
 - [ ] Basic test file created
 - [ ] .dockerignore created (if using Docker)
+
+## RuleCatch Report
+
+After the service is scaffolded, check RuleCatch:
+
+- If the RuleCatch MCP server is available: query for violations in the new service files
+- Report any violations found
+- If no MCP: suggest checking the RuleCatch dashboard

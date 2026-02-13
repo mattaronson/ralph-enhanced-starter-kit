@@ -67,3 +67,12 @@ For each issue:
 - **Issue**: What's wrong
 - **Fix**: How to fix it
 - **Why**: Why this matters
+
+## RuleCatch Report
+
+After completing the review, check RuleCatch for automated violations:
+
+- If the RuleCatch MCP server is available: query for violations on the reviewed files
+- Include results in a dedicated "RuleCatch Violations" section
+- This catches pattern-based violations the manual review might miss
+- If no MCP: suggest — "Install RuleCatch MCP for automated violation monitoring"

@@ -7,6 +7,20 @@ argument-hint: <feature-name>
 
 Create a structured test plan for: **$ARGUMENTS**
 
+## Branch Safety Check
+
+Before creating test plan files, check the current branch:
+
+```bash
+git branch --show-current
+```
+
+- If on `main` or `master`: **STOP.** Warn the user and suggest:
+  - `/worktree test-<feature>` — creates isolated branch + directory (recommended)
+  - `git checkout -b test/<feature>` — creates a branch in the current directory
+- If on a feature branch: proceed
+- If not a git repo: proceed (skip this check)
+
 ## Template
 
 Generate the following markdown document:
@@ -88,3 +102,11 @@ Feature Area C:    ⬜ NOT TESTED
 ```
 
 Save to `tests/plans/[feature-name]-test-plan.md`
+
+## RuleCatch Report
+
+After saving the test plan, check RuleCatch:
+
+- If the RuleCatch MCP server is available: query for violations related to testing in the project
+- Report any violations found (missing test coverage, untested features, etc.)
+- If no MCP: suggest checking the RuleCatch dashboard

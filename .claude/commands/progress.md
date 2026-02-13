@@ -43,6 +43,17 @@ find tests/ -name "*.test.*" 2>/dev/null | wc -l | xargs -I{} echo "Tests: {} fi
 | Tests | N files | ... | ... |
 | Documentation | ... | ... | ... |
 
+### RuleCatch Report
+| Metric | Value |
+|--------|-------|
+| Violations (this session) | ... |
+| Critical violations | ... |
+| Most violated rule | ... |
+| Files with violations | ... |
+
+If the RuleCatch MCP server is available: query for session summary and populate the table above.
+If no MCP available: show "Install RuleCatch for violation tracking — `npx @rulecatch/mcp-server init`"
+
 ### Next Actions (Priority Order)
 1. ...
 2. ...

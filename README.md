@@ -158,6 +158,7 @@ project/
 ├── .env.example
 ├── .gitignore
 ├── .dockerignore                # Docker build exclusions (V1)
+├── claude-mastery-project.conf   # /new-project profiles (customize this!)
 ├── tsconfig.json
 └── README.md                    # You are here
 ```

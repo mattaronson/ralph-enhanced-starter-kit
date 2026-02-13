@@ -109,6 +109,7 @@
       <a href="#database-wrapper">Database Wrapper</a>
       <a href="#docs-templates">Doc Templates</a>
       <a href="#testing-detail">Testing</a>
+      <a href="#wsl-setup">WSL Setup (Windows)</a>
       <a href="#global-config">Global Config</a>
       <a href="#coding-standards">Coding Standards</a>
       <a href="#monitor-your-rules">Monitor Your Rules</a>
@@ -165,6 +166,7 @@
         <a href="#database-wrapper">Database Wrapper</a>
         <a href="#docs-templates">Documentation Templates</a>
         <a href="#testing-detail">Testing Methodology</a>
+        <a href="#wsl-setup">WSL Setup (Windows)</a>
         <a href="#global-config">Global Config</a>
         <a href="#coding-standards">Coding Standards</a>
         <a href="#monitor-your-rules">Monitor Your Rules</a>
@@ -209,8 +211,8 @@
             <div class="feature-icon feature-icon-blue">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
             </div>
-            <h3>7 Slash Commands</h3>
-            <p><code>/review</code>, <code>/commit</code>, <code>/progress</code>, <code>/test-plan</code>, <code>/architecture</code>, <code>/new-project</code>, <code>/security-check</code></p>
+            <h3>13 Slash Commands</h3>
+            <p><code>/setup</code>, <code>/review</code>, <code>/commit</code>, <code>/progress</code>, <code>/test-plan</code>, <code>/architecture</code>, <code>/new-project</code>, <code>/security-check</code>, <code>/optimize-docker</code>, <code>/create-e2e</code>, <code>/worktree</code>, <code>/what-is-my-ai-doing</code>, <code>/refactor</code></p>
           </div>
 
           <div class="feature-card">
@@ -322,7 +324,13 @@ cp .claude/hooks/verify-no-secrets.sh ~/.claude/hooks/</code></pre>
 │   │   ├── test-plan.md         # /test-plan — generate test plan
 │   │   ├── architecture.md      # /architecture — show system design
 │   │   ├── new-project.md       # /new-project — scaffold new project
-│   │   └── security-check.md    # /security-check — scan for secrets
+│   │   ├── security-check.md    # /security-check — scan for secrets
+│   │   ├── optimize-docker.md   # /optimize-docker — Docker best practices
+│   │   ├── create-e2e.md        # /create-e2e — generate E2E tests
+│   │   ├── worktree.md          # /worktree — isolated task branches
+│   │   ├── what-is-my-ai-doing.md # /what-is-my-ai-doing — live AI monitor
+│   │   ├── setup.md             # /setup — interactive .env configuration
+│   │   └── refactor.md          # /refactor — audit + refactor against all rules
 │   ├── skills/
 │   │   ├── code-review/SKILL.md # Triggered code review checklist
 │   │   └── create-service/SKILL.md # Service scaffolding template
@@ -339,16 +347,32 @@ cp .claude/hooks/verify-no-secrets.sh ~/.claude/hooks/</code></pre>
 │   └── DECISIONS.md             # Architectural decision records
 ├── docs/                        # GitHub Pages site
 ├── src/
-│   └── core/db/index.ts         # Centralized database wrapper
+│   ├── core/db/index.ts         # Centralized database wrapper
+│   ├── handlers/                # Business logic
+│   ├── adapters/                # External service wrappers
+│   └── types/                   # Shared TypeScript types
+├── scripts/
+│   ├── db-query.ts              # Test Query Master — dev/test query index
+│   ├── queries/                 # Individual dev/test query files
+│   ├── build-content.ts         # Markdown → HTML article builder
+│   └── content.config.json      # Article registry (SEO metadata)
+├── content/                     # Markdown source files for articles
 ├── tests/
 │   ├── CHECKLIST.md             # Master test tracker
-│   └── ISSUES_FOUND.md          # User-guided testing log
+│   ├── ISSUES_FOUND.md          # User-guided testing log
+│   ├── e2e/                     # Playwright E2E tests
+│   ├── unit/                    # Vitest unit tests
+│   └── integration/             # Integration tests
 ├── global-claude-md/            # Copy to ~/.claude/ (one-time setup)
 │   ├── CLAUDE.md                # Global security gatekeeper
 │   └── settings.json            # Global hooks config
 ├── .env.example
 ├── .gitignore
 ├── .dockerignore
+├── package.json                 # All npm scripts (dev, test, db:query, etc.)
+├── claude-mastery-project.conf  # /new-project profiles + global root_dir
+├── playwright.config.ts         # E2E test config (test ports, webServer)
+├── vitest.config.ts             # Unit/integration test config
 ├── tsconfig.json
 └── README.md</code></pre>
       </section>
@@ -384,8 +408,29 @@ cp .claude/hooks/verify-no-secrets.sh ~/.claude/hooks/</code></pre>
           </div>
 
           <div class="concept-card">
-            <h3>Plan Mode Awareness <span class="version-tag">V5</span></h3>
-            <p>When you modify a plan, Claude appends changes without removing contradictions. Always review the full plan after changes.</p>
+            <h3>Plan First, Code Second <span class="version-tag">V5</span></h3>
+            <p>For non-trivial tasks, <strong>always start in plan mode</strong>. Don't let Claude write code until you've agreed on the plan. Bad plan = bad code.</p>
+            <p>Every step MUST have a unique name: <code>Step 3 (Auth System)</code>. When you change a step, Claude must <strong>replace</strong> it &mdash; not append. Claude forgets this. If the plan contradicts itself, tell Claude: &ldquo;Rewrite the full plan.&rdquo;</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>CLAUDE.md Is Team Memory</h3>
+            <p>Every time Claude makes a mistake, <strong>add a rule</strong> to prevent it from happening again. Tell Claude: &ldquo;Update CLAUDE.md so this doesn't happen again.&rdquo; Mistake rates actually drop over time. The file is checked into git &mdash; the whole team benefits from every lesson.</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>Never Work on Main</h3>
+            <p>Every task gets its own feature branch. Use <code>/worktree</code> for isolated directories. If Claude screws up, delete the branch &mdash; main was never touched. Review the full diff before merging. Enables <strong>parallel Claude sessions</strong> without conflicts.</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>Windows? Use WSL Mode</h3>
+            <p>Most Windows developers don't know VS Code can run its entire backend inside WSL 2. HMR becomes <strong>5-10x faster</strong>, Playwright tests run significantly faster, and file watching actually works. Your project must live on the WSL filesystem (<code>~/projects/</code>), NOT <code>/mnt/c/</code>. Run <code>/setup</code> to auto-detect.</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>Every Command Enforces the Rules</h3>
+            <p>Every slash command and skill has two built-in enforcement steps: <strong>Branch Safety Check</strong> (stops you from working on main, suggests <code>/worktree</code>) and <strong>RuleCatch Report</strong> (checks for violations after completion). The rules aren't just documented &mdash; they're enforced at every touchpoint.</p>
           </div>
 
           <div class="concept-card">
@@ -490,6 +535,20 @@ await page.goto('/dashboard');
               <li>TypeScript must compile with no errors (<code>tsc --noEmit</code>)</li>
             </ul>
           </div>
+          <div class="rule-block">
+            <div class="rule-header">
+              <span class="rule-number">Rule 9</span>
+              <h3>Git Workflow &mdash; Never Work on Main</h3>
+            </div>
+            <ul>
+              <li>NEVER commit directly to <code>main</code> or <code>master</code></li>
+              <li>ALWAYS create a feature branch for every task</li>
+              <li>Use <code>/worktree</code> to create an isolated branch + directory</li>
+              <li>Review the full diff (<code>git diff main...HEAD</code>) before merging</li>
+              <li>If Claude screws up on a branch &mdash; delete it. Main was never touched.</li>
+            </ul>
+          </div>
+
           <div class="rule-block">
             <div class="rule-header">
               <span class="rule-number">Rule 8</span>
@@ -627,6 +686,23 @@ fi</code></pre>
 
         <div class="commands-grid">
           <div class="command-card">
+            <h3><code>/setup</code></h3>
+            <p class="command-desc">Interactive project configuration. Walks you through setting up your <code>.env</code> with real values:</p>
+            <ul>
+              <li><strong>Multi-region</strong> &mdash; US + EU with isolated databases, VPS, and Dokploy per region</li>
+              <li><strong>Database</strong> &mdash; MongoDB/PostgreSQL per region (<code>MONGODB_URI_US</code>, <code>MONGODB_URI_EU</code>)</li>
+              <li><strong>Deployment</strong> &mdash; Dokploy on Hostinger VPS per region (IP, API key, app ID, webhook token)</li>
+              <li><strong>Docker</strong> &mdash; Hub username, image name, region tagging (<code>:latest</code> for US, <code>:eu</code> for EU)</li>
+              <li><strong>GitHub</strong> &mdash; username, SSH vs HTTPS</li>
+              <li><strong>Analytics</strong> &mdash; Rybbit site ID</li>
+              <li><strong>RuleCatch</strong> &mdash; API key, region</li>
+              <li><strong>Auth</strong> &mdash; auto-generates JWT secret</li>
+            </ul>
+            <p>Multi-region writes the <strong>region map</strong> to both <code>.env</code> and <code>CLAUDE.md</code> so Claude always knows: US containers &rarr; US database, EU containers &rarr; EU database. Never cross-connects.</p>
+            <p>Skips variables that already have values. Use <code>/setup --reset</code> to re-configure everything. Never displays secrets back to you. Keeps <code>.env.example</code> in sync.</p>
+          </div>
+
+          <div class="command-card">
             <h3><code>/review</code></h3>
             <p class="command-desc">Systematic code review against a 7-point checklist:</p>
             <ol>
@@ -681,8 +757,81 @@ fi</code></pre>
           </div>
 
           <div class="command-card">
+            <h3><code>/what-is-my-ai-doing</code></h3>
+            <p class="command-desc">Launches the RuleCatch AI-Pooler live monitor in a separate terminal. See everything your AI is doing in real time:</p>
+            <ul>
+              <li>Every tool call (Read, Write, Edit, Bash)</li>
+              <li>Token usage and cost per turn</li>
+              <li>Rule violations as they happen</li>
+              <li>Which files are being accessed</li>
+            </ul>
+            <pre class="language-bash"><code class="language-bash"># Run in a separate terminal
+npx @rulecatch/ai-pooler@latest monitor -v</code></pre>
+            <p>Zero token overhead &mdash; runs completely outside Claude's context. Also available as <code>pnpm ai:monitor</code>.</p>
+          </div>
+
+          <div class="command-card">
+            <h3><code>/worktree</code></h3>
+            <p class="command-desc">Creates an isolated git worktree + branch for a task:</p>
+            <pre class="language-bash"><code class="language-bash">/worktree add-auth          # → task/add-auth branch
+/worktree feat/new-dashboard # → uses prefix as-is</code></pre>
+            <p>Each task gets its own branch and its own directory. Main stays untouched. If Claude screws something up, delete the branch &mdash; zero risk. Enables running <strong>multiple Claude sessions in parallel</strong> without conflicts.</p>
+            <p>When done: merge into main (or open a PR), then <code>git worktree remove</code>.</p>
+          </div>
+
+          <div class="command-card">
+            <h3><code>/optimize-docker</code></h3>
+            <p class="command-desc">Audits your Dockerfile against 12 production best practices:</p>
+            <ol>
+              <li><strong>Multi-stage builds</strong> &mdash; mandatory, no exceptions</li>
+              <li><strong>Layer caching</strong> &mdash; COPY package.json before source</li>
+              <li><strong>Alpine base images</strong> &mdash; 7x smaller than full images</li>
+              <li><strong>Non-root user</strong> &mdash; drop privileges</li>
+              <li><strong>.dockerignore</strong> &mdash; must exclude .env, .git, node_modules</li>
+              <li><strong>Frozen lockfile</strong> &mdash; deterministic installs</li>
+              <li><strong>Health checks</strong> &mdash; Docker knows if app is alive</li>
+              <li><strong>No secrets in build args</strong> &mdash; runtime env only</li>
+              <li><strong>Pin versions</strong> &mdash; no <code>:latest</code> tags</li>
+            </ol>
+            <p>Generates an optimized Dockerfile, verifies <code>.dockerignore</code>, and reports image size estimate with before/after comparison.</p>
+          </div>
+
+          <div class="command-card">
+            <h3><code>/create-e2e</code></h3>
+            <p class="command-desc">Generates a properly structured Playwright E2E test for a feature. Reads the source code, identifies URLs/elements/data to verify, creates the test at <code>tests/e2e/[name].spec.ts</code> with happy path, error cases, and edge cases. Verifies the test meets the &ldquo;done&rdquo; checklist (URL assertion, visibility assertion, data assertion, error case, no TODOs) before finishing.</p>
+          </div>
+
+          <div class="command-card">
+            <h3><code>/refactor</code></h3>
+            <p class="command-desc">Audit + refactor any file against <strong>every rule</strong> in CLAUDE.md:</p>
+            <ol>
+              <li><strong>Branch check</strong> &mdash; verifies you're not on main (suggests <code>/worktree</code>)</li>
+              <li><strong>File size</strong> &mdash; &gt;300 lines = must split</li>
+              <li><strong>Function size</strong> &mdash; &gt;50 lines = must extract</li>
+              <li><strong>TypeScript</strong> &mdash; no <code>any</code>, explicit types, strict mode</li>
+              <li><strong>Import hygiene</strong> &mdash; no barrel imports, proper <code>import type</code></li>
+              <li><strong>Error handling</strong> &mdash; no swallowed errors, proper logging</li>
+              <li><strong>Database access</strong> &mdash; wrapper only (<code>src/core/db/</code>)</li>
+              <li><strong>API routes</strong> &mdash; <code>/api/v1/</code> prefix</li>
+              <li><strong>Promise.all</strong> &mdash; parallelize independent awaits</li>
+              <li><strong>Security + dead code</strong> &mdash; no secrets, no unused code</li>
+            </ol>
+            <p>Presents a <strong>named-step plan</strong> before making any changes. Splits files by type (types &rarr; <code>src/types/</code>, validation &rarr; colocated, helpers &rarr; colocated). Updates all imports across the project. Runs RuleCatch after completion.</p>
+            <pre class="language-bash"><code class="language-bash">/refactor src/handlers/users.ts
+/refactor src/server.ts --dry-run    # report only, no changes</code></pre>
+          </div>
+
+          <div class="command-card">
             <h3><code>/new-project</code></h3>
-            <p class="command-desc">Scaffolds a new project with all required files (<code>.env</code>, <code>.gitignore</code>, <code>.dockerignore</code>, <code>CLAUDE.md</code>, <code>tsconfig.json</code>), proper directory structure, error handlers, and framework-specific configuration for Next.js, Python, or Docker.</p>
+            <p class="command-desc">Full project scaffolding with profiles or shorthand params:</p>
+            <pre class="language-bash"><code class="language-bash">/new-project my-app clean
+/new-project my-app default
+/new-project my-app fullstack next dokploy seo tailwind pnpm
+/new-project my-api api fastify dokploy docker multiregion
+/new-project my-site static-site</code></pre>
+            <p><strong><code>clean</code></strong> &mdash; All Claude infrastructure (commands, skills, agents, hooks, project-docs, tests templates) with <strong>zero coding opinions</strong>. No TypeScript enforcement, no port assignments, no database wrapper, no quality gates. Your project, your rules &mdash; Claude just works.</p>
+            <p><strong><code>default</code></strong> and other profiles &mdash; Full opinionated scaffolding with project type, framework, SSR, hosting (Dokploy/Vercel/static), package manager, database, extras (Tailwind, Prisma, Docker, CI), and MCP servers. Includes mandatory SEO for web projects and Dokploy deployment scripts with multi-region support.</p>
+            <p>Use <code>claude-mastery-project.conf</code> profiles to save your preferred stack.</p>
           </div>
         </div>
       </section>
@@ -773,36 +922,173 @@ expect(result).toBeTruthy();  // too vague</code></pre>
 
       <!-- Deep Dive: Database Wrapper -->
       <section id="database-wrapper">
-        <h2>Database Wrapper &mdash; Singleton Pattern</h2>
-        <p>Without a centralized wrapper, each file creates its own database connection. With enough files, you exhaust the connection pool and your app crashes. This is one of the most common failure modes in AI-assisted development (documented in V5 Part 18).</p>
+        <h2>Database Wrapper &mdash; Production MongoDB</h2>
+        <p>The starter kit includes a <strong>production-grade MongoDB wrapper</strong> at <code>src/core/db/index.ts</code> using the native driver (no Mongoose, no ODMs). It enforces every best practice that prevents the most common database failures in AI-assisted development.</p>
 
-        <p>The starter kit includes a complete database wrapper template at <code>src/core/db/index.ts</code>:</p>
+        <h3>The Absolute Rule</h3>
+        <p><strong>ALL database access goes through <code>src/core/db/index.ts</code>. No exceptions.</strong> Never create <code>new MongoClient()</code> anywhere else. Never import <code>mongodb</code> directly in business logic.</p>
 
-        <pre class="language-typescript"><code class="language-typescript">let isConnected = false;
+        <pre class="language-typescript"><code class="language-typescript">// CORRECT — import from the centralized wrapper
+import { queryOne, insertOne, updateOne } from '@/core/db/index.js';
 
-// Connect to the database (singleton — only connects once)
-export async function connect(): Promise&lt;void&gt; {
-  if (isConnected) return;
-  if (!config.url) {
-    throw new Error('DATABASE_URL environment variable is not set');
-  }
-  // Replace with your actual connection logic
-  isConnected = true;
-}
+// WRONG — NEVER do this
+import { MongoClient } from 'mongodb';  // FORBIDDEN outside src/core/db/</code></pre>
 
-// Standard CRUD operations
-export async function getData&lt;T&gt;(collection: string, query: Record&lt;string, unknown&gt;): Promise&lt;T[]&gt;
-export async function saveData&lt;T&gt;(collection: string, data: T): Promise&lt;{ id: string }&gt;
-export async function updateData(collection: string, query: Record&lt;string, unknown&gt;, update: Record&lt;string, unknown&gt;): Promise&lt;{ modified: number }&gt;
-export async function deleteData(collection: string, query: Record&lt;string, unknown&gt;): Promise&lt;{ deleted: number }&gt;</code></pre>
+        <h3>Reading Data &mdash; Aggregation Only</h3>
+        <pre class="language-typescript"><code class="language-typescript">// Single document (automatic $limit: 1)
+const user = await queryOne&lt;User&gt;('users', { email });
 
-        <p><strong>Why this matters:</strong></p>
+// Pipeline query
+const recent = await queryMany&lt;Order&gt;('orders', [
+  { $match: { userId, status: 'active' } },
+  { $sort: { createdAt: -1 } },
+  { $limit: 20 },
+]);
+
+// Join — $limit enforced BEFORE $lookup automatically
+const userWithOrders = await queryWithLookup&lt;UserWithOrders&gt;('users', {
+  match: { _id: userId },
+  lookup: { from: 'orders', localField: '_id', foreignField: 'userId', as: 'orders' },
+});</code></pre>
+
+        <h3>Writing Data &mdash; BulkWrite Only</h3>
+        <pre class="language-typescript"><code class="language-typescript">// Insert
+await insertOne('users', { email, name, createdAt: new Date() });
+await insertMany('events', batchOfEvents);
+
+// Update — use $inc for counters (NEVER read-modify-write)
+await updateOne&lt;Stats&gt;('stats',
+  { date },
+  { $inc: { pageViews: 1 } },
+  true // upsert
+);
+
+// Complex batch (auto-retries E11000 concurrent races)
+await bulkOps('sessions', [
+  { updateOne: { filter: { sessionId }, update: { $inc: { events: 1 } }, upsert: true } },
+]);</code></pre>
+
+        <h3>Connection Pool Presets</h3>
+        <div class="port-table-wrapper">
+          <table class="port-table">
+            <thead>
+              <tr><th>Preset</th><th>Max Pool</th><th>Min Pool</th><th>Use Case</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>high</code></td><td>20</td><td>2</td><td>APIs, high-traffic services</td></tr>
+              <tr><td><code>standard</code></td><td>10</td><td>2</td><td>Default for most services</td></tr>
+              <tr><td><code>low</code></td><td>5</td><td>1</td><td>Background workers, cron jobs</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Additional Features</h3>
         <ul>
-          <li><strong>One connection pool</strong> &mdash; prevents exhaustion</li>
-          <li><strong>One place to change</strong> &mdash; swap databases without touching business logic</li>
-          <li><strong>One place to mock</strong> &mdash; testing becomes trivial</li>
-          <li><strong>One place to add</strong> logging, metrics, retries, circuit breakers</li>
+          <li><strong>Singleton per URI</strong> &mdash; same URI always returns the same client, prevents pool exhaustion</li>
+          <li><strong>Next.js hot-reload safe</strong> &mdash; persists connections via <code>globalThis</code> during development</li>
+          <li><strong>Transaction support</strong> &mdash; <code>withTransaction()</code> for multi-document atomic operations</li>
+          <li><strong>Change Stream access</strong> &mdash; <code>rawCollection()</code> for real-time event processing</li>
+          <li><strong>Graceful shutdown</strong> &mdash; <code>gracefulShutdown()</code> closes all pools on <code>SIGTERM</code>, <code>SIGINT</code>, <code>uncaughtException</code>, and <code>unhandledRejection</code> &mdash; no zombie connections on crash</li>
+          <li><strong>E11000 auto-retry</strong> &mdash; handles concurrent upsert race conditions automatically</li>
+          <li><strong>$limit before $lookup</strong> &mdash; <code>queryWithLookup()</code> enforces this for join performance</li>
         </ul>
+
+        <h3>Test Query Master &mdash; <code>scripts/db-query.ts</code></h3>
+        <p>One of the biggest problems with AI-assisted database development: Claude scatters random query scripts all over your project. The Test Query Master solves this completely.</p>
+
+        <div class="check-before-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="check-before-card">
+            <h4>The Problem</h4>
+            <p>Without guardrails, Claude creates ad-hoc database scripts everywhere &mdash; <code>scripts/check-users.ts</code>, <code>src/utils/debug-query.ts</code>, <code>temp-lookup.js</code> &mdash; making it impossible to tell test code from production code.</p>
+          </div>
+          <div class="check-before-card">
+            <h4>The Solution</h4>
+            <p><strong>Every</strong> dev/test query gets its own file in <code>scripts/queries/</code> and is registered in the master index. Production code in <code>src/</code> stays clean. One command shows everything: <code>npx tsx scripts/db-query.ts --list</code></p>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">scripts/queries/find-expired-sessions.ts</div>
+          <pre><code>import { queryMany } from '../../src/core/db/index.js';
+
+export default {
+  name: 'find-expired-sessions',
+  description: 'Find sessions that expired in the last 24 hours',
+  async run(args: string[]): Promise&lt;void&gt; {
+    const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const sessions = await queryMany('sessions', [
+      { $match: { expiresAt: { $lt: cutoff } } },
+      { $sort: { expiresAt: -1 } },
+      { $limit: 50 },
+    ]);
+    console.log(`Found ${sessions.length} expired sessions`);
+  },
+};</code></pre>
+        </div>
+
+        <p>Then register in <code>scripts/db-query.ts</code> and run: <code>npx tsx scripts/db-query.ts find-expired-sessions</code></p>
+        <p>Every query uses the MongoDB wrapper &mdash; same connection pool, same patterns, same rules. When you're done exploring, just delete the file and its registry entry.</p>
+
+        <h3>Content Builder &mdash; <code>scripts/build-content.ts</code></h3>
+        <p>A config-driven Markdown-to-HTML article builder. Write content in <code>content/</code> as Markdown, register it in <code>scripts/content.config.json</code>, and build fully SEO-ready static HTML pages with one command.</p>
+
+        <div class="code-block">
+          <div class="code-header">scripts/content.config.json (article registry)</div>
+          <pre><code>{
+  "articles": [
+    {
+      "id": "getting-started",
+      "published": true,
+      "mdSource": "content/getting-started.md",
+      "htmlOutput": "public/articles/getting-started/index.html",
+      "title": "Getting Started Guide",
+      "description": "Everything you need to know.",
+      "url": "https://example.com/articles/getting-started/",
+      "datePublished": "2026-01-15",
+      "category": "Guides",
+      "keywords": ["setup", "installation"]
+    }
+  ]
+}</code></pre>
+        </div>
+
+        <p>Each generated page includes: Open Graph, Twitter Cards, Schema.org JSON-LD, syntax highlighting, optional sidebar TOC, and parent/child article relationships.</p>
+
+        <div class="code-block">
+          <div class="code-header">npm scripts</div>
+          <pre><code>pnpm content:build              # Build all published articles
+pnpm content:build:id my-post   # Build a single article
+pnpm content:list               # List all articles and status
+pnpm content:dry-run            # Preview what would build</code></pre>
+        </div>
+
+        <h3>All Scripts &mdash; <code>package.json</code></h3>
+        <p>Everything is tied together through <code>package.json</code> scripts. No random <code>npx</code> commands to remember.</p>
+
+        <div class="port-table">
+          <table>
+            <tr><th>Command</th><th>What it does</th></tr>
+            <tr><td><code>pnpm dev</code></td><td>Dev server with hot reload</td></tr>
+            <tr><td><code>pnpm build</code></td><td>Type-check + compile TypeScript</td></tr>
+            <tr><td><code>pnpm start</code></td><td>Run production build</td></tr>
+            <tr><td><code>pnpm test</code></td><td>Run ALL tests (unit + E2E)</td></tr>
+            <tr><td><code>pnpm test:unit</code></td><td>Unit/integration tests (Vitest)</td></tr>
+            <tr><td><code>pnpm test:unit:watch</code></td><td>Unit tests in watch mode</td></tr>
+            <tr><td><code>pnpm test:coverage</code></td><td>Unit tests with coverage report</td></tr>
+            <tr><td><code>pnpm test:e2e</code></td><td>E2E tests (kills ports &rarr; spawns servers &rarr; Playwright)</td></tr>
+            <tr><td><code>pnpm test:e2e:headed</code></td><td>E2E with visible browser</td></tr>
+            <tr><td><code>pnpm test:e2e:ui</code></td><td>E2E with Playwright UI mode</td></tr>
+            <tr><td><code>pnpm typecheck</code></td><td>TypeScript check only</td></tr>
+            <tr><td><code>pnpm db:query &lt;name&gt;</code></td><td>Run a dev/test database query</td></tr>
+            <tr><td><code>pnpm db:query:list</code></td><td>List all registered queries</td></tr>
+            <tr><td><code>pnpm content:build</code></td><td>Build all published MD &rarr; HTML</td></tr>
+            <tr><td><code>pnpm content:list</code></td><td>List all articles</td></tr>
+            <tr><td><code>pnpm content:dry-run</code></td><td>Preview what would build</td></tr>
+            <tr><td><code>pnpm ai:monitor</code></td><td>Live AI activity monitor (run in separate terminal)</td></tr>
+            <tr><td><code>pnpm docker:optimize</code></td><td>Audit Dockerfile (use <code>/optimize-docker</code> in Claude)</td></tr>
+            <tr><td><code>pnpm clean</code></td><td>Remove dist/, coverage/, test-results/</td></tr>
+          </table>
+        </div>
       </section>
 
       <!-- Deep Dive: Documentation Templates -->
@@ -897,6 +1183,114 @@ export async function deleteData(collection: string, query: Record&lt;string, un
             </ol>
           </div>
         </div>
+
+        <h3>E2E Infrastructure &mdash; <code>playwright.config.ts</code></h3>
+        <p>The Playwright config is pre-wired with test ports, automatic server spawning, and port cleanup. You never have to manually start servers for E2E tests.</p>
+
+        <div class="check-before-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="check-before-card">
+            <h4>How It Works</h4>
+            <ol>
+              <li><code>pnpm test:e2e</code> &mdash; kills anything on test ports (4000, 4010, 4020)</li>
+              <li>Playwright spawns servers via <code>webServer</code> config on test ports</li>
+              <li>Tests run against the test servers</li>
+              <li>Servers shut down automatically when tests complete</li>
+            </ol>
+          </div>
+          <div class="check-before-card">
+            <h4>When Is a Test Done?</h4>
+            <ul>
+              <li>&check; At least one <code>toHaveURL()</code> assertion</li>
+              <li>&check; At least one <code>toBeVisible()</code> assertion</li>
+              <li>&check; At least one <code>toContainText()</code> data assertion</li>
+              <li>&check; Error case covered</li>
+              <li>&check; No <code>// TODO</code> placeholders</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-header">Test commands</div>
+          <pre><code>pnpm test              # ALL tests (unit + E2E)
+pnpm test:unit         # Unit/integration only (Vitest)
+pnpm test:e2e          # E2E only (kills ports → spawns servers → Playwright)
+pnpm test:e2e:headed   # E2E with visible browser
+pnpm test:e2e:ui       # E2E with Playwright UI mode
+pnpm test:e2e:report   # Open last HTML report</code></pre>
+        </div>
+
+        <h3><code>/create-e2e</code> Slash Command</h3>
+        <p>Use <code>/create-e2e &lt;feature-name&gt;</code> to generate a properly structured E2E test. Claude will:</p>
+        <ol>
+          <li>Read the source code for the feature being tested</li>
+          <li>Identify all URLs, elements, and data to verify</li>
+          <li>Ask what specific success criteria you expect (if not obvious)</li>
+          <li>Create the test at <code>tests/e2e/[name].spec.ts</code> with happy path, error cases, and edge cases</li>
+          <li>Verify the test meets the &ldquo;done&rdquo; checklist before finishing</li>
+        </ol>
+      </section>
+
+      <!-- WSL Setup -->
+      <section id="wsl-setup">
+        <h2>Windows Users &mdash; VS Code in WSL Mode</h2>
+        <p>If you're developing on Windows, this is the single biggest performance improvement you can make &mdash; and most people don't even know it exists.</p>
+
+        <p><strong>VS Code can run its entire backend inside WSL 2</strong> while the UI stays on Windows. Your terminal, extensions, git, Node.js, and Claude Code all run natively in Linux. Everything just works &mdash; but 5-10x faster.</p>
+
+        <div class="check-before-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="check-before-card">
+            <h4>Without WSL Mode</h4>
+            <ul>
+              <li>HMR takes 2-5 seconds per change</li>
+              <li>Playwright tests are slow and flaky</li>
+              <li>File watching misses changes or double-fires</li>
+              <li>Node.js filesystem ops hit NTFS translation layer</li>
+              <li><code>git status</code> takes seconds on large repos</li>
+            </ul>
+          </div>
+          <div class="check-before-card">
+            <h4>With WSL Mode</h4>
+            <ul>
+              <li>HMR is near-instant (&lt;200ms)</li>
+              <li>Playwright tests run at native Linux speed</li>
+              <li>File watching is reliable and fast</li>
+              <li>Native ext4 filesystem &mdash; no translation</li>
+              <li><code>git status</code> is instant</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Setup (One Time)</h3>
+        <pre class="language-bash"><code class="language-bash"># 1. Install WSL 2 (PowerShell as admin)
+wsl --install
+
+# 2. Restart your computer
+
+# 3. Install VS Code extension
+#    Search for "WSL" by Microsoft (ms-vscode-remote.remote-wsl)
+
+# 4. Connect VS Code to WSL
+#    Click green "><" icon in bottom-left → "Connect to WSL"
+
+# 5. Clone projects INSIDE WSL (not /mnt/c/)
+mkdir -p ~/projects
+cd ~/projects
+git clone git@github.com:YourUser/your-project.git
+code your-project    # opens in WSL mode automatically</code></pre>
+
+        <h3>The Critical Mistake</h3>
+        <p><strong>Your project MUST live on the WSL filesystem</strong> (<code>~/projects/</code>), NOT on <code>/mnt/c/</code>. Having WSL but keeping your project on the Windows filesystem gives you the worst of both worlds &mdash; every file operation still crosses the slow Windows/Linux boundary.</p>
+
+        <pre class="language-bash"><code class="language-bash"># Check your setup:
+pwd
+
+# GOOD — native Linux filesystem
+/home/you/projects/my-app
+
+# BAD — still hitting Windows filesystem through WSL
+/mnt/c/Users/you/projects/my-app</code></pre>
+
+        <p>Run <code>/setup</code> in Claude Code to auto-detect your environment and get specific instructions if something is misconfigured.</p>
       </section>
 
       <!-- Deep Dive: Global Config -->
@@ -970,12 +1364,17 @@ try {
           <li>Start a FRESH Claude session after renaming</li>
         </ol>
 
-        <h3>Plan Mode Awareness</h3>
-        <p>When modifying a plan, Claude appends changes without removing contradictions. Always:</p>
+        <h3>Plan Mode &mdash; Named Steps + Replace, Don't Append</h3>
+        <p>Every plan step MUST have a unique, descriptive name so you can reference it unambiguously:</p>
+        <pre class="language-text"><code class="language-text">Step 1 (Project Setup): Initialize repo with TypeScript
+Step 2 (Database Layer): Create MongoDB wrapper
+Step 3 (Auth System): Implement JWT authentication</code></pre>
+        <p>When modifying a plan, Claude tends to append instead of replacing &mdash; creating contradictions. The rules:</p>
         <ul>
-          <li>Use EXACT step names: &ldquo;Replace Step 3 (Database Selection): Use Redis&rdquo;</li>
-          <li>NEVER just append: &ldquo;Also, use Redis instead&rdquo; &larr; causes contradictions</li>
-          <li>Review the FULL plan after any change</li>
+          <li><strong>REPLACE</strong> the named step entirely: &ldquo;Change Step 3 (Auth System) to use session cookies&rdquo;</li>
+          <li><strong>NEVER</strong> just append: &ldquo;Also, use session cookies&rdquo; &larr; Step 3 still says JWT</li>
+          <li>After any change, Claude must <strong>rewrite the full updated plan</strong></li>
+          <li>If the plan contradicts itself, tell Claude: &ldquo;Rewrite the full plan &mdash; Step 3 and Step 7 contradict&rdquo;</li>
           <li>If fundamentally changing direction: <code>/clear</code> &rarr; state requirements fresh</li>
         </ul>
       </section>
