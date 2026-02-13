@@ -1,5 +1,7 @@
 # Claude Code Starter Kit
 
+### [View the Full Interactive Guide →](https://thedecipherist.github.io/claude-code-mastery-project-starter-kit/)
+
 > The definitive starting point for Claude Code projects.
 > Based on [Claude Code Mastery Guides V3-V5](https://github.com/TheDecipherist/claude-code-mastery) by TheDecipherist.
 
