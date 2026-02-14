@@ -646,11 +646,26 @@ WRONG:
 When updating any feature, keep these locations in sync:
 
 1. `README.md` (repository root)
-2. `project-docs/` (relevant documentation)
-3. Inline code comments
-4. Test descriptions
+2. `docs/index.html` (GitHub Pages site)
+3. `project-docs/` (relevant documentation)
+4. `CLAUDE.md` quick reference table (if adding commands/scripts)
+5. `tests/STARTER-KIT-VERIFICATION.md` (if adding hooks/files)
+6. Inline code comments
+7. Test descriptions
 
 If you update one, update ALL.
+
+### Adding a New Command or Hook — MANDATORY Checklist
+
+When creating a new `.claude/commands/*.md` or `.claude/hooks/*.sh`:
+
+1. **README.md** — Update the command count, project structure tree, and add a description section
+2. **docs/index.html** — Update the command count, project structure tree, and add a command card
+3. **CLAUDE.md** — Add to the quick reference table (if user-facing)
+4. **tests/STARTER-KIT-VERIFICATION.md** — Add verification checklist entry
+5. **.claude/settings.json** — Wire up hooks (if adding a hook)
+
+**This is NOT optional.** Every command/hook must appear in all five locations before the commit.
 
 ---
 
