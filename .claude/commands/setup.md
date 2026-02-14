@@ -130,11 +130,30 @@ If yes:
 
 ### Category: Multi-Region
 
-**Ask first:** "Is this a multi-region deployment?" (yes/no)
+**Ask first:** "Single-server or multi-region? (Most projects use single-server.)"
 
-If **no** — single region, use simple variable names (see Database and Deployment below).
+Default: **single-server**. If the user picks single-server, skip to the Database category below.
 
-If **yes** — ask: "Which regions?" (default: US + EU). Then EVERY region-specific service gets its own suffixed variables. The `.env` file becomes the **region map** — Claude must ALWAYS check it to know which region is which.
+If the user picks **multi-region**, show this complexity warning BEFORE proceeding:
+
+```
+⚠️  Multi-region adds significant complexity:
+
+  • Separate VPS, database, and Dokploy instance PER region
+  • Suffixed environment variables (_US, _EU) for every service
+  • Region-tagged Docker images (:latest for US, :eu for EU)
+  • Region routing logic in your application code
+  • Every deployment must update ALL regions to stay in sync
+
+Most projects don't need this. Single-server handles significant traffic
+and you can always add regions later.
+```
+
+**After showing the warning, ask:** "Continue with multi-region setup? (yes/no)"
+
+If they say no, fall back to single-server. If they confirm yes, proceed with multi-region.
+
+If **yes (confirmed)** — ask: "Which regions?" (default: US + EU). Then EVERY region-specific service gets its own suffixed variables. The `.env` file becomes the **region map** — Claude must ALWAYS check it to know which region is which.
 
 **CRITICAL MULTI-REGION RULES (written to project CLAUDE.md):**
 
