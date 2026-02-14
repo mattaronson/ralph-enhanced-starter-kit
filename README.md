@@ -67,6 +67,8 @@ Use `/help` to see all 20 commands at any time.
 <!-- Capture /progress output as a screenshot -->
 ![Slash Commands](docs/commands-preview.png)
 
+> **Screenshots needed:** See `docs/screenshots/README.md` for the 8 screenshots and 3 animated recordings that complete this section.
+
 ## What's Included
 
 Everything you need to start a Claude Code project the right way — security, automation, documentation, and testing all pre-configured.
