@@ -1053,7 +1053,7 @@ npx @rulecatch/mcp-server init
 
 npm: [@rulecatch/ai-pooler](https://www.npmjs.com/package/@rulecatch/ai-pooler) · [@rulecatch/mcp-server](https://www.npmjs.com/package/@rulecatch/mcp-server)
 
-[Explore RuleCatch.AI →](https://rulecatch.ai?utm_source=github-pages&utm_medium=article&utm_campaign=rulecatch&utm_content=tutorial) · 7-day free trial
+[Explore RuleCatch.AI →](https://rulecatch.ai?utm_source=github-pages&utm_medium=article&utm_campaign=rulecatch&utm_content=tutorial) · 7-day free trial - no credit card required
 
 ---
 
