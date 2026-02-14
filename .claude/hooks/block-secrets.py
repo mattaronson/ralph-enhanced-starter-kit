@@ -4,7 +4,7 @@ Block Secrets Hook — PreToolUse
 Prevents Claude from reading or editing sensitive files.
 Exit code 2 = block operation and tell Claude why.
 
-Based on Claude Code Mastery Guides V3-V5 by TheDecipherist
+Based on Claude Code Mastery Guides V1-V5 by TheDecipherist
 """
 import json
 import sys

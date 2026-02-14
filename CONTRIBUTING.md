@@ -52,4 +52,4 @@ Contributors are acknowledged in README.md and the [GitHub Pages site](https://t
 
 ## Context
 
-This project implements patterns from the [Claude Code Mastery Guide](https://github.com/TheDecipherist/claude-code-mastery). Understanding V3-V5 helps explain why rules exist the way they do.
+This project implements patterns from the [Claude Code Mastery Guide](https://github.com/TheDecipherist/claude-code-mastery). Understanding V1-V5 helps explain why rules exist the way they do.

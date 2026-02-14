@@ -16,7 +16,10 @@ Create a new project with all best practices from the Claude Code Mastery Guides
 
 Before parsing arguments, read `claude-mastery-project.conf` (in the starter kit root or `~/.claude/claude-mastery-project.conf` as fallback).
 
-Extract the `[global]` section for `root_dir`. This is the default parent directory for new projects.
+Extract the `[global]` section for `root_dir` and `default_profile`.
+
+- `root_dir` — Default parent directory for new projects
+- `default_profile` — Profile to use when no profile is specified in arguments (e.g., `default_profile = clean`). If not set, ask the user as before.
 
 ### Step 0.0 — Global Claude Config (one-time setup)
 
@@ -81,7 +84,7 @@ Examples:
 - `/new-project ~/code/my-app default` — explicit path, uses default profile
 - `/new-project my-app fullstack next mongo playwright context7 rulecatch` — full stack
 
-Any keyword not provided = ask the user.
+Any keyword not provided = check `default_profile` in `[global]` first, then ask the user. If `default_profile` is set (e.g., `default_profile = clean`) and no profile was specified in the arguments, use that profile automatically.
 
 ---
 

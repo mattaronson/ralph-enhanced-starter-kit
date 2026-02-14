@@ -3,7 +3,7 @@
 # Runs linter after Claude writes/edits a file.
 # Keep hooks FAST (<5 seconds) or Claude may not wait (V5 lesson).
 #
-# Based on Claude Code Mastery Guides V3-V5 by TheDecipherist
+# Based on Claude Code Mastery Guides V1-V5 by TheDecipherist
 
 # Read the tool input from stdin
 INPUT=$(cat)

@@ -32,7 +32,7 @@ Everything you need to start a Claude Code project the right way — security, a
 - **CLAUDE.md** — Battle-tested project instructions with 11 numbered critical rules for security, TypeScript, database wrappers, testing, and deployment
 - **Global CLAUDE.md** — Security gatekeeper for all projects. Never publish secrets, never commit .env files, standardized scaffolding rules
 - **16 Slash Commands** — `/install-global`, `/setup`, `/diagram`, `/review`, `/commit`, `/progress`, `/test-plan`, `/architecture`, `/new-project`, `/security-check`, `/optimize-docker`, `/create-e2e`, `/create-api`, `/worktree`, `/what-is-my-ai-doing`, `/refactor`
-- **Hooks** — Deterministic enforcement that always runs. Block secrets, lint on save, verify no credentials in staged commits
+- **9 Hooks** — Deterministic enforcement that always runs. Block secrets, lint on save, verify no credentials, branch protection, port conflicts, Rybbit pre-deploy gate, E2E test gate, env sync warnings, and RuleCatch monitoring
 - **Skills** — Context-aware templates: systematic code review checklist and full microservice scaffolding
 - **Custom Agents** — Read-only code reviewer for security audits. Test writer that creates tests with explicit assertions
 - **Documentation Templates** — Pre-structured ARCHITECTURE.md, INFRASTRUCTURE.md, and DECISIONS.md templates
@@ -65,7 +65,7 @@ cp .env.example .env
 /install-global
 ```
 
-This installs global CLAUDE.md rules, settings.json hooks, and enforcement scripts (`block-secrets.py`, `verify-no-secrets.sh`, `rulecatch-check.sh`) into `~/.claude/`. If you already have a global config, it merges without overwriting.
+This installs global CLAUDE.md rules, settings.json hooks, and enforcement scripts (`block-secrets.py`, `verify-no-secrets.sh`, `check-rulecatch.sh`) into `~/.claude/`. If you already have a global config, it merges without overwriting.
 
 <details>
 <summary>Manual setup (if you prefer)</summary>
@@ -76,7 +76,7 @@ cp global-claude-md/settings.json ~/.claude/settings.json
 mkdir -p ~/.claude/hooks
 cp .claude/hooks/block-secrets.py ~/.claude/hooks/
 cp .claude/hooks/verify-no-secrets.sh ~/.claude/hooks/
-cp .claude/hooks/rulecatch-check.sh ~/.claude/hooks/
+cp .claude/hooks/check-rulecatch.sh ~/.claude/hooks/
 ```
 
 </details>
@@ -133,9 +133,14 @@ project/
 │   │   └── test-writer.md       # Test writing subagent
 │   └── hooks/
 │       ├── block-secrets.py     # PreToolUse: block sensitive files
+│       ├── check-rybbit.sh      # PreToolUse: block deploy without Rybbit
+│       ├── check-branch.sh      # PreToolUse: block commits on main
+│       ├── check-ports.sh       # PreToolUse: block if port in use
+│       ├── check-e2e.sh         # PreToolUse: block push without E2E tests
 │       ├── lint-on-save.sh      # PostToolUse: lint after writes
 │       ├── verify-no-secrets.sh # Stop: check for secrets
-│       └── rulecatch-check.sh   # Stop: report RuleCatch violations
+│       ├── check-rulecatch.sh   # Stop: report RuleCatch violations
+│       └── check-env-sync.sh    # Stop: warn on .env/.env.example drift
 ├── project-docs/
 │   ├── ARCHITECTURE.md          # System overview (authoritative)
 │   ├── INFRASTRUCTURE.md        # Deployment details
@@ -366,6 +371,22 @@ if path.name in SENSITIVE_FILENAMES:
     sys.exit(2)
 ```
 
+### PreToolUse: `check-rybbit.sh`
+
+Runs **before** any deployment command (`docker push`, `vercel deploy`, `dokploy`). If the project has `analytics = rybbit` in `claude-mastery-project.conf`, verifies that `NEXT_PUBLIC_RYBBIT_SITE_ID` is set in `.env` with a real value. Blocks with a link to https://app.rybbit.io if missing. Skips projects that don't use Rybbit.
+
+### PreToolUse: `check-branch.sh`
+
+Runs **before** any `git commit`. If auto-branch is enabled (default: true) and you're on main/master, blocks the commit and tells Claude to create a feature branch first. Respects the `auto_branch` setting in `claude-mastery-project.conf`.
+
+### PreToolUse: `check-ports.sh`
+
+Runs **before** dev server commands. Detects the target port from `-p`, `--port`, `PORT=`, or known script names (`dev:website`→3000, `dev:api`→3001, etc.). If the port is already in use, blocks and shows the PID + kill command.
+
+### PreToolUse: `check-e2e.sh`
+
+Runs **before** `git push` to main/master. Checks for real `.spec.ts` or `.test.ts` files in `tests/e2e/` (excluding the example template). Blocks push if no E2E tests exist.
+
 ### PostToolUse: `lint-on-save.sh`
 
 Runs **after** Claude writes or edits a file. Automatically checks TypeScript compilation, ESLint, or Python linting depending on file extension.
@@ -399,9 +420,13 @@ if grep -qE 'AKIA[0-9A-Z]{16}' "$file"; then
 fi
 ```
 
-### Stop: `rulecatch-check.sh`
+### Stop: `check-rulecatch.sh`
 
 Runs when Claude **finishes a turn**. Checks RuleCatch for any rule violations detected during the session. Skips silently if RuleCatch isn't installed — zero overhead for users who haven't set it up yet.
+
+### Stop: `check-env-sync.sh`
+
+Runs when Claude **finishes a turn**. Compares key names (never values) between `.env` and `.env.example`. If `.env` has keys that `.env.example` doesn't document, prints a warning so other developers know those variables exist. Informational only — never blocks.
 
 ### Hook Configuration
 
@@ -410,10 +435,21 @@ Hooks are wired up in `.claude/settings.json`:
 ```json
 {
   "hooks": {
-    "PreToolUse": [{
-      "matcher": "Read|Edit|Write",
-      "hooks": [{ "type": "command", "command": "python3 .claude/hooks/block-secrets.py" }]
-    }],
+    "PreToolUse": [
+      {
+        "matcher": "Read|Edit|Write",
+        "hooks": [{ "type": "command", "command": "python3 .claude/hooks/block-secrets.py" }]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "bash .claude/hooks/check-rybbit.sh" },
+          { "type": "command", "command": "bash .claude/hooks/check-branch.sh" },
+          { "type": "command", "command": "bash .claude/hooks/check-ports.sh" },
+          { "type": "command", "command": "bash .claude/hooks/check-e2e.sh" }
+        ]
+      }
+    ],
     "PostToolUse": [{
       "matcher": "Write",
       "hooks": [{ "type": "command", "command": "bash .claude/hooks/lint-on-save.sh" }]
@@ -421,7 +457,8 @@ Hooks are wired up in `.claude/settings.json`:
     "Stop": [{
       "hooks": [
         { "type": "command", "command": "bash .claude/hooks/verify-no-secrets.sh" },
-        { "type": "command", "command": "bash .claude/hooks/rulecatch-check.sh" }
+        { "type": "command", "command": "bash .claude/hooks/check-rulecatch.sh" },
+        { "type": "command", "command": "bash .claude/hooks/check-env-sync.sh" }
       ]
     }]
   }
@@ -452,7 +489,7 @@ One-time setup: installs the starter kit's global Claude config into `~/.claude/
 
 - **Smart merge** — if you already have a global `CLAUDE.md`, it appends missing sections without overwriting yours
 - **settings.json** — merges deny rules and hooks (never removes existing ones)
-- **Hooks** — copies `block-secrets.py`, `verify-no-secrets.sh`, and `rulecatch-check.sh` to `~/.claude/hooks/`
+- **Hooks** — copies `block-secrets.py`, `verify-no-secrets.sh`, and `check-rulecatch.sh` to `~/.claude/hooks/`
 
 Reports exactly what was added, skipped, and merged. Your existing config is never overwritten.
 

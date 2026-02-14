@@ -3,7 +3,7 @@
 # Runs when Claude finishes a turn — reports any rule violations detected.
 # Guaranteed to run (stronger than CLAUDE.md command instructions).
 #
-# Based on Claude Code Mastery Guides V3-V5 by TheDecipherist
+# Based on Claude Code Mastery Guides V1-V5 by TheDecipherist
 
 # Check if RuleCatch CLI is available
 if ! command -v npx &>/dev/null; then
@@ -12,6 +12,7 @@ fi
 
 # Check if @rulecatch/ai-pooler is available (quick check)
 # If not installed, skip silently — don't block the user
+# Always use latest to make sure the ai-pooler is up to date
 if ! npx @rulecatch/ai-pooler@latest check --help &>/dev/null 2>&1; then
     exit 0
 fi

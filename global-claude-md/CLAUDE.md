@@ -2,7 +2,7 @@
 
 > Place this at ~/.claude/CLAUDE.md
 > It applies to EVERY project you work on.
-> Based on Claude Code Mastery Guides V3-V5 by TheDecipherist
+> Based on Claude Code Mastery Guides V1-V5 by TheDecipherist
 
 ---
 

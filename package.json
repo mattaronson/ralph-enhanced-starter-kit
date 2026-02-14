@@ -1,7 +1,7 @@
 {
   "name": "claude-code-mastery-starter-kit",
   "version": "1.0.0",
-  "description": "Production-ready project starter kit based on Claude Code Mastery Guides V3-V5",
+  "description": "Production-ready project starter kit based on Claude Code Mastery Guides V1-V5",
   "type": "module",
   "private": true,
   "scripts": {

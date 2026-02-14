@@ -71,9 +71,14 @@ ls -1 .claude/hooks/
 ```
 
 - [ ] `.claude/hooks/block-secrets.py` exists
+- [ ] `.claude/hooks/check-rybbit.sh` exists
+- [ ] `.claude/hooks/check-branch.sh` exists
+- [ ] `.claude/hooks/check-ports.sh` exists
+- [ ] `.claude/hooks/check-e2e.sh` exists
 - [ ] `.claude/hooks/lint-on-save.sh` exists
 - [ ] `.claude/hooks/verify-no-secrets.sh` exists
-- [ ] `.claude/hooks/rulecatch-check.sh` exists
+- [ ] `.claude/hooks/check-rulecatch.sh` exists
+- [ ] `.claude/hooks/check-env-sync.sh` exists
 
 ### 1.5 Settings
 
@@ -83,9 +88,11 @@ cat .claude/settings.json | python3 -m json.tool
 
 - [ ] `.claude/settings.json` is valid JSON
 - [ ] Has `PreToolUse` hook for `Read|Edit|Write` → `block-secrets.py`
+- [ ] Has `PreToolUse` hook for `Bash` → `check-rybbit.sh`, `check-branch.sh`, `check-ports.sh`, `check-e2e.sh`
 - [ ] Has `PostToolUse` hook for `Write` → `lint-on-save.sh`
 - [ ] Has `Stop` hook → `verify-no-secrets.sh`
-- [ ] Has `Stop` hook → `rulecatch-check.sh`
+- [ ] Has `Stop` hook → `check-rulecatch.sh`
+- [ ] Has `Stop` hook → `check-env-sync.sh`
 
 ### 1.6 Global Claude Config Templates
 
@@ -97,7 +104,7 @@ ls -1 global-claude-md/
 - [ ] `global-claude-md/settings.json` exists
 - [ ] `global-claude-md/settings.json` has `permissions.deny` list for sensitive files
 - [ ] `global-claude-md/settings.json` has `PreToolUse` hook → `~/.claude/hooks/block-secrets.py`
-- [ ] `global-claude-md/settings.json` has `Stop` hooks → `verify-no-secrets.sh` and `rulecatch-check.sh`
+- [ ] `global-claude-md/settings.json` has `Stop` hooks → `verify-no-secrets.sh` and `check-rulecatch.sh`
 
 ### 1.7 Database Wrapper
 
@@ -433,16 +440,85 @@ bash -c 'file .claude/hooks/lint-on-save.sh'
 - [ ] Handles `.py` files → runs ruff or flake8
 - [ ] Returns exit 0 (never blocks)
 
-### 6.7 rulecatch-check.sh Behavior
+### 6.7 check-rulecatch.sh Behavior
 
 ```bash
-bash -c 'file .claude/hooks/rulecatch-check.sh'
+bash -c 'file .claude/hooks/check-rulecatch.sh'
 ```
 
 - [ ] File is a valid bash script
 - [ ] Checks if `npx` is available
 - [ ] Checks if `@rulecatch/ai-pooler` is installed
 - [ ] Returns exit 0 (warns, never blocks)
+
+### 6.8 check-rybbit.sh Behavior
+
+```bash
+bash -c 'file .claude/hooks/check-rybbit.sh'
+```
+
+- [ ] File is a valid bash script
+- [ ] Skips non-deployment commands (exit 0)
+- [ ] Checks `claude-mastery-project.conf` for `analytics = rybbit`
+- [ ] If no conf or `analytics = none` → exit 0
+- [ ] Checks `.env` for `NEXT_PUBLIC_RYBBIT_SITE_ID`
+- [ ] Blocks if missing, empty, or placeholder value → exit 2
+- [ ] Error message points to https://app.rybbit.io
+
+### 6.9 check-branch.sh Behavior
+
+```bash
+bash -c 'file .claude/hooks/check-branch.sh'
+```
+
+- [ ] File is a valid bash script
+- [ ] Skips non-`git commit` commands → exit 0
+- [ ] Skips if not in a git repo → exit 0
+- [ ] If not on main/master → exit 0
+- [ ] Checks `auto_branch` setting (default: true)
+- [ ] If auto_branch=true and on main → exit 2
+- [ ] If auto_branch=false → exit 0
+
+### 6.10 check-ports.sh Behavior
+
+```bash
+bash -c 'file .claude/hooks/check-ports.sh'
+```
+
+- [ ] File is a valid bash script
+- [ ] Extracts port from `-p`, `--port`, `PORT=`, or known script names
+- [ ] Maps `dev:website`→3000, `dev:api`→3001, `dev:dashboard`→3002
+- [ ] Maps test ports: `dev:test:website`→4000, `dev:test:api`→4010, `dev:test:dashboard`→4020
+- [ ] If no port detected → exit 0
+- [ ] If `lsof` unavailable → exit 0
+- [ ] If port in use → exit 2 showing PID and kill command
+
+### 6.11 check-e2e.sh Behavior
+
+```bash
+bash -c 'file .claude/hooks/check-e2e.sh'
+```
+
+- [ ] File is a valid bash script
+- [ ] Skips non-`git push` commands → exit 0
+- [ ] Detects push to main/master (explicit or current branch)
+- [ ] Checks `tests/e2e/` for `.spec.ts` or `.test.ts` files
+- [ ] Excludes `example-homepage.spec.ts` from the count
+- [ ] Blocks if no real E2E tests → exit 2
+- [ ] If real tests exist → exit 0
+
+### 6.12 check-env-sync.sh Behavior
+
+```bash
+bash -c 'file .claude/hooks/check-env-sync.sh'
+```
+
+- [ ] File is a valid bash script
+- [ ] Skips if `.env` or `.env.example` doesn't exist → exit 0
+- [ ] Extracts key names only (never reads values)
+- [ ] Finds keys in `.env` missing from `.env.example`
+- [ ] Prints warning listing missing key names
+- [ ] Always returns exit 0 (informational, never blocks)
 
 ---
 

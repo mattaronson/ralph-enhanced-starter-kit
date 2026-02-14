@@ -3,7 +3,7 @@
 # Checks staged git files for accidentally committed secrets.
 # Runs when Claude finishes a turn — catches secrets before they're committed.
 #
-# Based on Claude Code Mastery Guides V3-V5 by TheDecipherist
+# Based on Claude Code Mastery Guides V1-V5 by TheDecipherist
 
 # Only run if we're in a git repo
 if ! git rev-parse --is-inside-work-tree &>/dev/null 2>&1; then

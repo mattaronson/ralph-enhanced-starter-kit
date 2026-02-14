@@ -1,6 +1,6 @@
 # CLAUDE.md — Project Instructions
 
-> Based on Claude Code Mastery Guides V3-V5 by TheDecipherist
+> Based on Claude Code Mastery Guides V1-V5 by TheDecipherist
 > https://github.com/TheDecipherist/claude-code-mastery
 
 ---
@@ -491,7 +491,7 @@ project/
 │   ├── commands/          # Slash commands (/review, /refactor, /worktree, /new-project, etc.)
 │   ├── skills/            # Triggered expertise & scaffolding templates
 │   ├── agents/            # Custom subagents
-│   └── hooks/             # Enforcement scripts (block-secrets, verify-no-secrets, rulecatch-check)
+│   └── hooks/             # Enforcement scripts (9 hooks: secrets, branch, ports, rybbit, e2e, lint, env-sync, rulecatch)
 ├── project-docs/
 │   ├── ARCHITECTURE.md    # System overview & data flow
 │   ├── INFRASTRUCTURE.md  # Deployment & environment details

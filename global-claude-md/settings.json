@@ -30,7 +30,7 @@
           },
           {
             "type": "command",
-            "command": "bash ~/.claude/hooks/rulecatch-check.sh"
+            "command": "bash ~/.claude/hooks/check-rulecatch.sh"
           }
         ]
       }
