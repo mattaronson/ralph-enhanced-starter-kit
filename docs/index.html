@@ -96,6 +96,7 @@
     <nav id="mobile-toc" class="mobile-toc">
       <div class="toc-header">Contents</div>
       <a href="#whats-included">What's Included</a>
+      <a href="#what-is-this">What Is This?</a>
       <a href="#quick-start">Quick Start</a>
       <a href="#project-structure">Project Structure</a>
       <a href="#key-concepts">Key Concepts</a>
@@ -153,6 +154,7 @@
       <nav id="toc">
         <div class="toc-header">Contents</div>
         <a href="#whats-included" class="active">What's Included</a>
+        <a href="#what-is-this">What Is This?</a>
         <a href="#quick-start">Quick Start</a>
         <a href="#project-structure">Project Structure</a>
         <a href="#key-concepts">Key Concepts</a>
@@ -252,6 +254,30 @@
             <h3>Live AI Monitor</h3>
             <p>See every tool call, token, cost, and violation in real-time with <code>/what-is-my-ai-doing</code>. Zero token overhead &mdash; runs completely outside Claude's context.</p>
           </div>
+        </div>
+      </section>
+
+      <!-- What Is This -->
+      <section id="what-is-this">
+        <h2>What Is This?</h2>
+        <div class="callout" style="background: var(--bg-secondary); border-left: 4px solid var(--accent-cyan); padding: 1rem 1.25rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
+          <strong>This is a scaffold template, not a runnable application.</strong> It provides the infrastructure (commands, hooks, skills, agents, documentation templates) that makes Claude Code dramatically more effective. You use it to <strong>create</strong> projects, not run it directly.
+        </div>
+
+        <h3>Two Ways to Use It</h3>
+        <div class="check-before-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="check-before-card">
+            <h4>A. Scaffold a New Project</h4>
+            <p>The most common path. Run <code>/new-project my-app clean</code> (or <code>default</code>) to create a new project directory with all Claude Code tooling pre-configured. Run <code>/quickstart</code> for a guided walkthrough.</p>
+          </div>
+          <div class="check-before-card">
+            <h4>B. Customize the Template</h4>
+            <p>Clone this repo and modify the commands, hooks, skills, and rules to match your team's standards. Then use your customized version as the source for <code>/new-project</code>.</p>
+          </div>
+        </div>
+
+        <div class="callout" style="background: rgba(255, 100, 100, 0.08); border-left: 4px solid #ff6464; padding: 1rem 1.25rem; border-radius: 0.5rem; margin-top: 1rem;">
+          <strong>What NOT to do:</strong> Don't clone this repo and run <code>pnpm dev</code> expecting a working app. This is the <em>template</em> that creates apps &mdash; it's not an app itself. Start with option A above.
         </div>
       </section>
 

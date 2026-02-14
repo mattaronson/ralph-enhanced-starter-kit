@@ -13,7 +13,22 @@
 
 ## What Is This?
 
-This is a **ready-to-use project template** that bakes in every best practice from the Claude Code Mastery Guide series (V1, V2, V3, V4, and V5). Instead of reading 4,000+ lines of guides and setting things up yourself, clone this and start building.
+This is a **scaffold template**, not a runnable application. It provides the infrastructure (commands, hooks, skills, agents, documentation templates) that makes Claude Code dramatically more effective. You use it to **create** projects, not run it directly.
+
+### Two Ways to Use It
+
+**A. Scaffold a new project (most common):**
+```bash
+/new-project my-app clean    # or: /new-project my-app default
+cd ~/projects/my-app
+/setup
+```
+This creates a new project directory with all the Claude Code tooling pre-configured. Run `/quickstart` for a guided walkthrough.
+
+**B. Customize the template itself:**
+Clone this repo and modify the commands, hooks, skills, and rules to match your team's standards. Then use your customized version as the source for `/new-project`.
+
+> **What NOT to do:** Don't clone this repo and run `pnpm dev` expecting a working app. This is the *template* that creates apps — it's not an app itself. If you're looking to build something, start with option A above.
 
 ## See It In Action
 
