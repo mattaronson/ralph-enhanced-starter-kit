@@ -1215,18 +1215,18 @@ When modifying a plan:
 
 > **Not required.** The starter kit works fully without RuleCatch. All hooks, commands, and quality gates function independently. If you don't install it, the `check-rulecatch.sh` hook simply skips silently with zero overhead.
 
-**Why you'd want it anyway:** AI-generated code introduces subtle issues — security gaps, broken patterns, ignored rules — that pass linting and tests but shouldn't reach main. RuleCatch catches these *during* the session, before you merge. It's the difference between reviewing AI output yourself and having 200+ rules do it automatically in real-time.
+**Why you'd want it anyway:** AI models don't follow CLAUDE.md rules 100% of the time. They'll use JavaScript instead of TypeScript, skip your database wrapper, hardcode values, or ignore patterns you've documented. You won't always catch it in review. [RuleCatch.AI](https://rulecatch.ai?utm_source=github-pages&utm_medium=article&utm_campaign=rulecatch&utm_content=tutorial) gives you visibility into what your AI is actually doing — and flags violations before they reach main.
 
-[RuleCatch.AI](https://rulecatch.ai?utm_source=github-pages&utm_medium=article&utm_campaign=rulecatch&utm_content=tutorial) monitors AI-assisted development sessions using the same Claude Code hooks system this kit teaches — zero token overhead, completely invisible to the AI model.
+**How it works — three components:**
 
-RuleCatch monitors AI-assisted development sessions in real-time using the same Claude Code hooks system this kit teaches — zero token overhead, completely invisible to the AI model.
+| Component | What it does |
+|-----------|-------------|
+| **[AI-Pooler](https://www.npmjs.com/package/@rulecatch/ai-pooler)** | Collects tool calls from Claude via hooks. Runs outside the AI context — zero token overhead, invisible to the model |
+| **[Dashboard](https://rulecatch.ai?utm_source=github-pages&utm_medium=article&utm_campaign=rulecatch&utm_content=tutorial)** | Shows violations across 18 rule categories, session analytics (tokens, cost, lines/hour), trend reports, and per-file attribution. Alerts via Slack, Discord, PagerDuty, and more |
+| **[MCP Server](https://www.npmjs.com/package/@rulecatch/mcp-server)** | Adds 6 tools to Claude so you can query violations, get fix plans, and review summaries without leaving your session |
 
-**What it does:**
 - **200+ pre-built rules** across security, TypeScript, React, Next.js, MongoDB, Docker, and more — violations detected in under 100ms
-- **Session analytics** — token usage, cost per session, lines per hour, correction rates
-- **MCP integration** — ask Claude directly: `"RuleCatch, what was violated today?"`
-- **Dashboard & reporting** — full violation analytics, trend reports, team insights, alerts via Slack, Discord, PagerDuty, and more
-- **Privacy-first** — AES-256-GCM client-side encryption; you hold the key
+- **Privacy-first** — AES-256-GCM client-side encryption. You hold the key — RuleCatch never sees your plaintext data. US and EU data isolation, fully GDPR compliant
 
 **Quick setup:**
 

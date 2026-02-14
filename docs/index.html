@@ -1751,8 +1751,7 @@ Step 3 (Auth System): Implement JWT authentication</code></pre>
           <div class="rulecatch-content">
             <div class="rulecatch-intro">
               <p><strong>RuleCatch is optional.</strong> The starter kit works fully without it &mdash; all hooks, commands, and quality gates function independently. If RuleCatch isn't installed, the <code>check-rulecatch.sh</code> hook simply skips silently with zero overhead.</p>
-              <p><strong>Why you'd want it anyway:</strong> AI-generated code introduces subtle issues &mdash; security gaps, broken patterns, ignored rules &mdash; that pass linting and tests but shouldn't reach main. RuleCatch catches these <em>during</em> the session, before you merge. It's the difference between reviewing AI output yourself and having 200+ rules do it automatically in real-time.</p>
-              <p><a href="https://rulecatch.ai?utm_source=github-pages&utm_medium=article&utm_campaign=rulecatch&utm_content=tutorial" target="_blank" rel="noopener"><strong>RuleCatch.AI</strong></a> monitors your AI-assisted development sessions using the same Claude Code hooks system this starter kit teaches &mdash; running completely outside the AI context with zero token overhead.</p>
+              <p><strong>Why you'd want it anyway:</strong> AI models don't follow CLAUDE.md rules 100% of the time. They'll use JavaScript instead of TypeScript, skip your database wrapper, hardcode values, or ignore patterns you've documented. You won't always catch it in review. <a href="https://rulecatch.ai?utm_source=github-pages&utm_medium=article&utm_campaign=rulecatch&utm_content=tutorial" target="_blank" rel="noopener"><strong>RuleCatch.AI</strong></a> gives you visibility into what your AI is actually doing &mdash; and flags violations before they reach main.</p>
             </div>
 
             <div class="rulecatch-features">
@@ -1761,8 +1760,8 @@ Step 3 (Auth System): Implement JWT authentication</code></pre>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
                 </div>
                 <div>
-                  <h4>200+ Pre-Built Rules</h4>
-                  <p>Security, TypeScript, React, Next.js, MongoDB, Docker, Python &mdash; violations detected in under 100ms</p>
+                  <h4>AI-Pooler</h4>
+                  <p>Collects tool calls from Claude via hooks. Runs outside the AI context &mdash; zero token overhead, invisible to the model. Also gives you a live terminal view of tokens, cost, violations, and tool usage as you work</p>
                 </div>
               </div>
 
@@ -1771,8 +1770,8 @@ Step 3 (Auth System): Implement JWT authentication</code></pre>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                 </div>
                 <div>
-                  <h4>Session Analytics</h4>
-                  <p>Track token usage, cost per session, lines per hour, and correction rates across your team</p>
+                  <h4>Dashboard</h4>
+                  <p>Violations across 18 rule categories, session analytics (tokens, cost, lines/hour), trend reports, per-file attribution. Alerts via Slack, Discord, PagerDuty, and more</p>
                 </div>
               </div>
 
@@ -1781,8 +1780,8 @@ Step 3 (Auth System): Implement JWT authentication</code></pre>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
                 </div>
                 <div>
-                  <h4>MCP Integration</h4>
-                  <p>Ask Claude directly: <code>"RuleCatch, what was violated today?"</code> &mdash; query violations without leaving your session</p>
+                  <h4>MCP Server</h4>
+                  <p>Adds 6 tools to Claude so you can query violations, get fix plans, and review summaries without leaving your session. Ask: <code>"RuleCatch, what was violated today?"</code></p>
                 </div>
               </div>
 
@@ -1791,8 +1790,8 @@ Step 3 (Auth System): Implement JWT authentication</code></pre>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 </div>
                 <div>
-                  <h4>Privacy-First &amp; GDPR Compliant</h4>
-                  <p>AES-256-GCM client-side encryption. You hold the key &mdash; RuleCatch never sees your plaintext data. Fully GDPR compliant with servers in both the US and EU</p>
+                  <h4>200+ Rules &amp; Privacy-First</h4>
+                  <p>Security, TypeScript, React, Next.js, MongoDB, Docker &mdash; violations in under 100ms. AES-256-GCM client-side encryption. You hold the key. US and EU data isolation, fully GDPR compliant</p>
                 </div>
               </div>
             </div>
