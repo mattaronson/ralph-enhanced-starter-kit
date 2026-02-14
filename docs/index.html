@@ -256,7 +256,7 @@
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
             </div>
             <h3>Live AI Monitor</h3>
-            <p>See every tool call, token, cost, and violation in real-time with <code>/what-is-my-ai-doing</code>. Zero token overhead &mdash; runs completely outside Claude's context.</p>
+            <p>See every tool call, token, cost, and violation in real-time with <code>/what-is-my-ai-doing</code>. Zero token overhead &mdash; runs completely outside Claude's context. Requires <a href="https://rulecatch.ai?utm_source=github-pages&utm_medium=article&utm_campaign=rulecatch&utm_content=tutorial" target="_blank" rel="noopener">RuleCatch.AI</a> (optional).</p>
           </div>
         </div>
       </section>
@@ -931,7 +931,7 @@ fi</code></pre>
         <p>Invoke these with <code>/command</code> in any Claude Code session. Each command is a markdown file in <code>.claude/commands/</code> that gives Claude specific instructions and tool permissions.</p>
 
         <div class="callout" style="background: var(--bg-secondary); border-left: 4px solid var(--accent-amber); padding: 1rem 1.25rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
-          <strong>New:</strong> See everything your AI does in real-time &rarr; <code>/what-is-my-ai-doing</code>
+          <strong>New:</strong> See everything your AI does in real-time &rarr; <code>/what-is-my-ai-doing</code> (requires <a href="#monitor-your-rules">RuleCatch.AI</a>)
         </div>
 
         <div class="commands-grid">
@@ -988,6 +988,7 @@ fi</code></pre>
 
           <div class="command-card">
             <h3><code>/what-is-my-ai-doing</code></h3>
+            <p class="command-desc" style="background: rgba(251, 191, 36, 0.1); border-left: 3px solid var(--accent-amber); padding: 0.5rem 0.75rem; border-radius: 0.25rem; margin-bottom: 0.75rem;"><strong>Requires <a href="https://rulecatch.ai?utm_source=github-pages&utm_medium=article&utm_campaign=rulecatch&utm_content=tutorial" target="_blank" rel="noopener">RuleCatch.AI</a></strong> &mdash; see <a href="#monitor-your-rules">Monitor Your Rules</a> to set it up.</p>
             <p class="command-desc">Launches the RuleCatch AI-Pooler live monitor in a separate terminal. See everything your AI is doing in real time:</p>
             <ul>
               <li>Every tool call (Read, Write, Edit, Bash)</li>

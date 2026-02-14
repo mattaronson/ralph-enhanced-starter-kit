@@ -619,6 +619,8 @@ Skips variables that already have values. Use `/setup --reset` to re-configure e
 
 ### `/what-is-my-ai-doing`
 
+> **Requires [RuleCatch.AI](https://rulecatch.ai).** This command launches the RuleCatch AI-Pooler — if you haven't installed it yet, see the [Monitor Your Rules](#monitor-your-rules-with-rulecatchai-optional) section below.
+
 Launches the RuleCatch AI-Pooler live monitor in a separate terminal:
 
 - Every tool call (Read, Write, Edit, Bash)
