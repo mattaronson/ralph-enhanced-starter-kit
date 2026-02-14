@@ -22,7 +22,7 @@ Before running this verification:
 
 > Verify the starter kit itself is complete before testing `/new-project`.
 
-### 1.1 Slash Commands (18 files)
+### 1.1 Slash Commands (20 files)
 
 ```bash
 ls -1 .claude/commands/
@@ -40,13 +40,15 @@ ls -1 .claude/commands/
 - [ ] `progress.md` exists
 - [ ] `quickstart.md` exists
 - [ ] `refactor.md` exists
+- [ ] `reset-to-defaults.md` exists
 - [ ] `review.md` exists
 - [ ] `security-check.md` exists
+- [ ] `set-clean-as-default.md` exists
 - [ ] `setup.md` exists
 - [ ] `test-plan.md` exists
 - [ ] `what-is-my-ai-doing.md` exists
 - [ ] `worktree.md` exists
-- [ ] **Total: 18 files** (`ls .claude/commands/ | wc -l` = 18)
+- [ ] **Total: 20 files** (`ls .claude/commands/ | wc -l` = 20)
 
 ### 1.2 Skills (2 directories)
 
