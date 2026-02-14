@@ -1213,9 +1213,11 @@ When modifying a plan:
 
 ## Monitor Your Rules with RuleCatch.AI (Optional)
 
-> **Not required.** The starter kit works fully without RuleCatch. All hooks, commands, and quality gates function independently. RuleCatch adds real-time session analytics and rule monitoring on top — if you don't install it, the `check-rulecatch.sh` hook simply skips silently with zero overhead.
+> **Not required.** The starter kit works fully without RuleCatch. All hooks, commands, and quality gates function independently. If you don't install it, the `check-rulecatch.sh` hook simply skips silently with zero overhead.
 
-This starter kit gives you rules, hooks, and quality gates. [RuleCatch.AI](https://rulecatch.ai?utm_source=github-pages&utm_medium=article&utm_campaign=rulecatch&utm_content=tutorial) tells you when they're broken.
+**Why you'd want it anyway:** AI-generated code introduces subtle issues — security gaps, broken patterns, ignored rules — that pass linting and tests but shouldn't reach main. RuleCatch catches these *during* the session, before you merge. It's the difference between reviewing AI output yourself and having 200+ rules do it automatically in real-time.
+
+[RuleCatch.AI](https://rulecatch.ai?utm_source=github-pages&utm_medium=article&utm_campaign=rulecatch&utm_content=tutorial) monitors AI-assisted development sessions using the same Claude Code hooks system this kit teaches — zero token overhead, completely invisible to the AI model.
 
 RuleCatch monitors AI-assisted development sessions in real-time using the same Claude Code hooks system this kit teaches — zero token overhead, completely invisible to the AI model.
 
