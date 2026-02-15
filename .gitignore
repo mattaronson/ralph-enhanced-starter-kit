@@ -53,6 +53,9 @@ _ai_temp/
 project-docs/checkpoints/CURRENT_STATE.md
 project-docs/checkpoints/archive/
 
+# RALPH stage completion marker (transient)
+.ralph-stage-complete
+
 # RALPH config (may contain user-specific settings)
 .claude/ralph/config.yml
 

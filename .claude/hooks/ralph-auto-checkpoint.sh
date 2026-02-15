@@ -1,6 +1,28 @@
 #!/bin/bash
-# PostToolUse: Auto-checkpoint when thresholds reached
-# Suggests creating a checkpoint when lines changed exceeds threshold
+# PostToolUse: Auto-checkpoint when thresholds reached or stage completed
+# 1. Detects .ralph-stage-complete marker → auto-checkpoint + advance stage
+# 2. Suggests checkpoint when lines changed exceeds threshold
+
+MARKER_FILE=".ralph-stage-complete"
+
+# --- Stage completion detection (runs even if auto-checkpoint is disabled) ---
+
+if [ -f "$MARKER_FILE" ]; then
+  echo ""
+  echo "RALPH: Stage marked complete — creating checkpoint and advancing..."
+  echo ""
+
+  # Run checkpoint with auto + advance flags
+  bash scripts/ralph/create-checkpoint.sh --auto --advance-stage 2>&1
+
+  # Remove marker
+  rm -f "$MARKER_FILE"
+
+  # Exit early — no need to also check lines threshold
+  exit 0
+fi
+
+# --- Lines-changed threshold check ---
 
 # Only run if RALPH is enabled
 if [ ! -f ".claude/ralph/config.yml" ]; then

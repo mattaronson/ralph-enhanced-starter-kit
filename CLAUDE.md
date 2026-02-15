@@ -40,6 +40,7 @@
 | `/ralph-checkpoint` | Save current loop state and progress |
 | `/ralph-resume` | Resume work from last checkpoint |
 | `/ralph-status` | Show current loop state and progress |
+| `/ralph-complete-stage` | Mark stage done, auto-checkpoint, advance to next |
 | **Getting Started** | |
 | `/help` | List all commands, skills, and agents |
 | `/quickstart` | Interactive first-run walkthrough for new users |

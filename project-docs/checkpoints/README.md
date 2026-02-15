@@ -34,6 +34,13 @@ Loads checkpoint, verifies integrity, displays next objectives.
 ```
 Shows current loop, stage, progress, and blockers.
 
+### Complete Stage and Advance
+```bash
+/ralph-complete-stage
+```
+Marks current stage as done, auto-checkpoints, and advances to the next stage.
+On the final stage, marks the entire loop as COMPLETED.
+
 ## Loop Configuration
 
 Loops defined in `.claude/ralph/config.yml`:
@@ -66,8 +73,14 @@ Automatic checkpoints trigger when:
 - 500+ lines changed (configurable)
 - 30+ minutes elapsed (configurable)
 - Before major refactors (if enabled)
+- **Stage marked complete** via `/ralph-complete-stage`
 
-Configure in `.claude/ralph/config.yml` under `auto_checkpoint`.
+When a stage is completed, the PostToolUse hook automatically:
+1. Creates a new checkpoint with the completed stage recorded
+2. Advances to the next stage in the loop
+3. Populates next-stage objectives from the config
+
+Configure thresholds in `.claude/ralph/config.yml` under `auto_checkpoint`.
 
 ## Safety
 
@@ -83,6 +96,12 @@ Shell scripts for manual checkpoint operations:
 ```bash
 # Create checkpoint from command line
 bash scripts/ralph/create-checkpoint.sh
+
+# Create checkpoint with auto stage advancement (used by hooks)
+bash scripts/ralph/create-checkpoint.sh --auto --advance-stage
+
+# Mark current stage as complete (triggers auto-advancement)
+bash scripts/ralph/complete-stage.sh
 
 # Validate current checkpoint integrity
 bash scripts/ralph/validate-checkpoint.sh
