@@ -1831,17 +1831,45 @@ npx @rulecatch/mcp-server init</code></pre>
       <!-- MCP Servers -->
       <section id="mcp-servers">
         <h2>Recommended MCP Servers</h2>
-        <pre class="language-bash"><code class="language-bash"># Live documentation (eliminates outdated API answers)
-claude mcp add context7 -- npx -y @upstash/context7-mcp@latest
+        <p>MCP (Model Context Protocol) servers extend Claude's capabilities by giving it tools beyond reading and writing files. Each server below solves a specific problem in AI-assisted development. All are optional &mdash; install the ones that fit your workflow.</p>
 
-# GitHub integration (PRs, issues, CI/CD)
-claude mcp add github -- npx -y @modelcontextprotocol/server-github
+        <div class="commands-grid">
+          <div class="command-card">
+            <h3>Context7 &mdash; Live Documentation</h3>
+            <p class="command-desc">Claude's training data has a knowledge cutoff. When it generates code for a library, it might use APIs that have been renamed, deprecated, or don't exist in your version. Context7 fetches up-to-date, version-specific documentation and code examples directly from official sources and injects them into Claude's context.</p>
+            <p><strong>What it solves:</strong> Hallucinated APIs, outdated code patterns, version mismatches</p>
+            <p><strong>How to use:</strong> Add <code>use context7</code> to your prompt &mdash; Context7 automatically identifies the relevant library and fetches current docs</p>
+            <pre class="language-bash"><code class="language-bash">claude mcp add context7 -- npx -y @upstash/context7-mcp@latest</code></pre>
+            <p>npm: <a href="https://www.npmjs.com/package/@upstash/context7-mcp" target="_blank" rel="noopener">@upstash/context7-mcp</a> &middot; <a href="https://github.com/upstash/context7" target="_blank" rel="noopener">GitHub</a></p>
+          </div>
 
-# E2E testing
-claude mcp add playwright -- npx -y @anthropic-ai/playwright-mcp
+          <div class="command-card">
+            <h3>GitHub MCP &mdash; Repository Management</h3>
+            <p class="command-desc">Gives Claude direct access to the GitHub API &mdash; create and review PRs, manage issues, trigger CI/CD workflows, search code across repos, and handle branch operations. Instead of switching between Claude and the GitHub UI, Claude can do it all in-session.</p>
+            <p><strong>What it solves:</strong> Context-switching between Claude and GitHub for PR reviews, issue management, and CI/CD</p>
+            <p><strong>Toolsets:</strong> Repository management, issues, pull requests, actions, code security, discussions, notifications</p>
+            <pre class="language-bash"><code class="language-bash">claude mcp add github -- npx -y @modelcontextprotocol/server-github</code></pre>
+            <p style="font-size: 0.85rem; opacity: 0.8;"><strong>Note:</strong> GitHub has also released an <a href="https://github.com/github/github-mcp-server" target="_blank" rel="noopener">official GitHub MCP Server</a> with expanded toolsets.</p>
+            <p>npm: <a href="https://www.npmjs.com/package/@modelcontextprotocol/server-github" target="_blank" rel="noopener">@modelcontextprotocol/server-github</a> &middot; <a href="https://github.com/github/github-mcp-server" target="_blank" rel="noopener">GitHub (official)</a></p>
+          </div>
 
-# AI development analytics & rule monitoring (RuleCatch.AI)
-npx @rulecatch/mcp-server init</code></pre>
+          <div class="command-card">
+            <h3>Playwright MCP &mdash; Browser Automation</h3>
+            <p class="command-desc">Gives Claude the ability to interact with web pages through structured accessibility snapshots &mdash; no vision models or screenshots needed. Claude can navigate pages, click elements, fill forms, and verify content using the page's accessibility tree.</p>
+            <p><strong>What it solves:</strong> E2E test debugging, verifying UI behavior, interacting with web apps during development</p>
+            <p><strong>How it works:</strong> Uses Playwright's accessibility tree (not screenshots) &mdash; fast, lightweight, and LLM-friendly. Supports Chrome, Firefox, WebKit, and 143+ device emulation profiles</p>
+            <pre class="language-bash"><code class="language-bash">claude mcp add playwright -- npx -y @playwright/mcp@latest</code></pre>
+            <p>npm: <a href="https://www.npmjs.com/package/@playwright/mcp" target="_blank" rel="noopener">@playwright/mcp</a> &middot; <a href="https://github.com/microsoft/playwright-mcp" target="_blank" rel="noopener">GitHub</a></p>
+          </div>
+
+          <div class="command-card">
+            <h3>RuleCatch MCP &mdash; AI Session Analytics</h3>
+            <p class="command-desc">Already covered in detail in the <a href="#monitor-your-rules">Monitor Your Rules</a> section above. Gives Claude direct read access to violation data so it can query what rules it's breaking and generate fix plans.</p>
+            <pre class="language-bash"><code class="language-bash">npx @rulecatch/mcp-server init</code></pre>
+            <p>npm: <a href="https://www.npmjs.com/package/@rulecatch/mcp-server" target="_blank" rel="noopener">@rulecatch/mcp-server</a> &middot; <a href="https://rulecatch.ai?utm_source=github-pages&utm_medium=article&utm_campaign=rulecatch&utm_content=tutorial" target="_blank" rel="noopener">RuleCatch.AI</a></p>
+          </div>
+        </div>
+
         <p>See the <a href="https://github.com/TheDecipherist/claude-code-mastery" target="_blank" rel="noopener">Claude Code Mastery Guide</a> for the complete MCP server directory.</p>
       </section>
 

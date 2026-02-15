@@ -1248,21 +1248,68 @@ npm: [@rulecatch/ai-pooler](https://www.npmjs.com/package/@rulecatch/ai-pooler) 
 
 ## Recommended MCP Servers
 
+MCP (Model Context Protocol) servers extend Claude's capabilities by giving it tools beyond reading and writing files. Each server below solves a specific problem in AI-assisted development. All are optional — install the ones that fit your workflow.
+
+### Context7 — Live Documentation
+
+Claude's training data has a knowledge cutoff. When it generates code for a library, it might use APIs that have been renamed, deprecated, or don't exist in your version. Context7 fixes this by fetching up-to-date, version-specific documentation and code examples directly from official sources and injecting them into Claude's context.
+
+**What it solves:** Hallucinated APIs, outdated code patterns, version mismatches
+**How to use:** Add `use context7` to your prompt — Context7 automatically identifies the relevant library and fetches current docs
+
 ```bash
-# Live documentation (eliminates outdated API answers)
 claude mcp add context7 -- npx -y @upstash/context7-mcp@latest
+```
 
-# GitHub integration (PRs, issues, CI/CD)
+npm: [@upstash/context7-mcp](https://www.npmjs.com/package/@upstash/context7-mcp) · [GitHub](https://github.com/upstash/context7)
+
+---
+
+### GitHub MCP — Repository Management
+
+Gives Claude direct access to the GitHub API — create and review PRs, manage issues, trigger CI/CD workflows, search code across repos, and handle branch operations. Instead of switching between Claude and the GitHub UI, Claude can do it all in-session.
+
+**What it solves:** Context-switching between Claude and GitHub for PR reviews, issue management, and CI/CD
+**Toolsets:** Repository management, issues, pull requests, actions, code security, discussions, notifications
+
+```bash
 claude mcp add github -- npx -y @modelcontextprotocol/server-github
+```
 
-# E2E testing
-claude mcp add playwright -- npx -y @anthropic-ai/playwright-mcp
+> **Note:** GitHub has also released an [official GitHub MCP Server](https://github.com/github/github-mcp-server) with expanded toolsets. Either works — the official server offers more granular control via `--toolsets` flags.
 
-# AI development analytics & rule monitoring (RuleCatch.AI)
+npm: [@modelcontextprotocol/server-github](https://www.npmjs.com/package/@modelcontextprotocol/server-github) · [GitHub (official)](https://github.com/github/github-mcp-server)
+
+---
+
+### Playwright MCP — Browser Automation
+
+Gives Claude the ability to interact with web pages through structured accessibility snapshots — no vision models or screenshots needed. Claude can navigate pages, click elements, fill forms, and verify content using the page's accessibility tree, which is faster and more deterministic than pixel-based approaches.
+
+**What it solves:** E2E test debugging, verifying UI behavior, interacting with web apps during development
+**How it works:** Uses Playwright's accessibility tree (not screenshots) — fast, lightweight, and LLM-friendly. Supports Chrome, Firefox, WebKit, and 143+ device emulation profiles
+
+```bash
+claude mcp add playwright -- npx -y @playwright/mcp@latest
+```
+
+npm: [@playwright/mcp](https://www.npmjs.com/package/@playwright/mcp) · [GitHub](https://github.com/microsoft/playwright-mcp)
+
+---
+
+### RuleCatch MCP — AI Session Analytics
+
+Already covered in detail in the [Monitor Your Rules](#monitor-your-rules-with-rulecatchai-optional) section above. Gives Claude direct read access to violation data so it can query what rules it's breaking and generate fix plans.
+
+```bash
 npx @rulecatch/mcp-server init
 ```
 
-See the [V4 guide](https://github.com/TheDecipherist/claude-code-mastery) for the complete MCP server directory.
+npm: [@rulecatch/mcp-server](https://www.npmjs.com/package/@rulecatch/mcp-server) · [RuleCatch.AI](https://rulecatch.ai?utm_source=github-pages&utm_medium=article&utm_campaign=rulecatch&utm_content=tutorial)
+
+---
+
+See the [Claude Code Mastery Guide](https://github.com/TheDecipherist/claude-code-mastery) for the complete MCP server directory.
 
 ---
 
