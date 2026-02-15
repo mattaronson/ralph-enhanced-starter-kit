@@ -33,12 +33,13 @@ if [ -f "$CURRENT_STATE" ]; then
   fi
 fi
 
-# Generate file tree hash
-HASH=$(find . -type f -not -path '*/.git/*' -not -path '*/node_modules/*' -not -path '*/dist/*' -not -path '*/coverage/*' 2>/dev/null | sort | md5sum 2>/dev/null | awk '{print $1}')
+# Generate file tree hash (hashes each file's content, then hashes the combined result)
+# Excludes checkpoint files to avoid chicken-and-egg hash invalidation
+HASH=$(find . -type f -not -path '*/.git/*' -not -path '*/node_modules/*' -not -path '*/dist/*' -not -path '*/coverage/*' -not -path '*/checkpoints/CURRENT_STATE.md' -not -path '*/checkpoints/archive/*' 2>/dev/null | sort | xargs md5sum 2>/dev/null | md5sum | awk '{print $1}')
 
 # Fallback to sha256sum if md5sum not available
 if [ -z "$HASH" ]; then
-  HASH=$(find . -type f -not -path '*/.git/*' -not -path '*/node_modules/*' -not -path '*/dist/*' -not -path '*/coverage/*' 2>/dev/null | sort | sha256sum 2>/dev/null | awk '{print $1}')
+  HASH=$(find . -type f -not -path '*/.git/*' -not -path '*/node_modules/*' -not -path '*/dist/*' -not -path '*/coverage/*' -not -path '*/checkpoints/CURRENT_STATE.md' -not -path '*/checkpoints/archive/*' 2>/dev/null | sort | xargs sha256sum 2>/dev/null | sha256sum | awk '{print $1}')
 fi
 
 # Get files modified
