@@ -1,0 +1,55 @@
+# RALPH Loop Configuration
+# Read-Analyze-Loop-Persist-Handoff
+# Multi-session workflow management for Claude Code
+
+auto_checkpoint:
+  enabled: true
+  triggers:
+    lines_changed: 500           # Auto-checkpoint after N lines changed
+    time_minutes: 30             # Auto-checkpoint after N minutes
+    before_major_refactor: true  # Checkpoint before destructive operations
+
+checkpoint_storage:
+  current: "project-docs/checkpoints/CURRENT_STATE.md"
+  archive: "project-docs/checkpoints/archive/"
+  max_archives: 10               # Keep last N checkpoints
+
+loops:
+  - name: "feature-development"
+    description: "Standard feature development workflow"
+    stages:
+      - name: "plan"
+        objectives: ["Define requirements", "Design architecture", "Identify dependencies"]
+      - name: "implement"
+        objectives: ["Write code", "Follow TypeScript standards", "Use singleton patterns"]
+      - name: "test"
+        objectives: ["Write unit tests", "Write integration tests", "All tests pass"]
+      - name: "document"
+        objectives: ["Update README", "Add JSDoc comments", "Update ARCHITECTURE.md"]
+    checkpoint_after_stage: true
+
+  - name: "migration"
+    description: "Migrate existing project to new architecture"
+    stages:
+      - name: "assess"
+        objectives: ["Inventory current code", "Identify dependencies", "Plan migration phases"]
+      - name: "migrate"
+        objectives: ["Move code systematically", "Preserve functionality", "Update imports"]
+      - name: "validate"
+        objectives: ["All tests pass", "No TypeScript errors", "Manual smoke test"]
+      - name: "cleanup"
+        objectives: ["Remove old code", "Update documentation", "Final verification"]
+    checkpoint_after_stage: true
+
+  - name: "debugging"
+    description: "Systematic debugging workflow"
+    stages:
+      - name: "reproduce"
+        objectives: ["Create minimal repro", "Document steps", "Verify bug exists"]
+      - name: "diagnose"
+        objectives: ["Identify root cause", "Review related code", "Check assumptions"]
+      - name: "fix"
+        objectives: ["Implement fix", "Add regression test", "Verify fix works"]
+      - name: "verify"
+        objectives: ["All tests pass", "Bug no longer reproduces", "No side effects"]
+    checkpoint_after_stage: true

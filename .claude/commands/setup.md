@@ -292,7 +292,46 @@ Also write a region reference comment block at the top of `.env`:
 # ==========================================
 ```
 
-## Step 6 — Report
+## Step 6 — RALPH Loop Configuration
+
+Ask: "Enable RALPH looping for multi-session workflows?"
+
+Explain briefly:
+```
+RALPH = Read-Analyze-Loop-Persist-Handoff
+Useful for: migrations, large features, debugging
+Enables: /ralph-checkpoint, /ralph-resume, /ralph-status
+```
+
+If **yes**:
+
+1. Copy config template:
+```bash
+cp .claude/ralph/config.yml.example .claude/ralph/config.yml
+```
+
+2. Create checkpoint directories:
+```bash
+mkdir -p project-docs/checkpoints/archive
+```
+
+3. Ask: "Select default loop for this project:"
+   - 1) feature-development (plan → implement → test → document)
+   - 2) migration (assess → migrate → validate → cleanup)
+   - 3) debugging (reproduce → diagnose → fix → verify)
+   - 4) Skip (configure manually later)
+
+4. Report RALPH setup:
+```
+RALPH enabled
+  Commands: /ralph-checkpoint, /ralph-resume, /ralph-status
+  Auto-checkpoint: 500 lines or 30 minutes
+  Config: .claude/ralph/config.yml
+```
+
+If **no**: "Skipping RALPH configuration. Enable later by copying `.claude/ralph/config.yml.example` to `.claude/ralph/config.yml`."
+
+## Step 7 — Report
 
 **Single-region report:**
 ```
@@ -306,6 +345,7 @@ Project Setup Complete
 ✓ Deployment (Dokploy on Hostinger)
 ✓ RuleCatch (region: us)
 ✗ Multi-region (single region)
+✓ RALPH (feature-development loop)
 
 .env is gitignored: ✓
 .env.example updated: ✓
@@ -333,6 +373,7 @@ Region routing:
 .env is gitignored: ✓
 .env.example updated: ✓
 CLAUDE.md updated with region map: ✓
+✓ RALPH (migration loop)
 ```
 
 Show ✓ for configured categories, ✗ for skipped ones.

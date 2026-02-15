@@ -28,6 +28,10 @@
           {
             "type": "command",
             "command": "bash .claude/hooks/check-e2e.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/ralph-verify-resume.sh"
           }
         ]
       }
@@ -39,6 +43,15 @@
           {
             "type": "command",
             "command": "bash .claude/hooks/lint-on-save.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/ralph-auto-checkpoint.sh"
           }
         ]
       }

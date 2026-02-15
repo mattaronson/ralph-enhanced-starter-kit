@@ -49,6 +49,13 @@ yarn-error.log*
 # Temporary AI research files
 _ai_temp/
 
+# RALPH checkpoints (contains session-specific state)
+project-docs/checkpoints/CURRENT_STATE.md
+project-docs/checkpoints/archive/
+
+# RALPH config (may contain user-specific settings)
+.claude/ralph/config.yml
+
 # Misc
 *.bak
 *.tmp

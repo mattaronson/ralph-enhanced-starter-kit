@@ -1,0 +1,132 @@
+# Pre-built Loop Templates
+# Copy these into your config.yml to use them
+
+# Standard feature development — most common workflow
+feature-development:
+  description: "Standard feature development workflow"
+  stages:
+    - name: "plan"
+      objectives:
+        - "Define requirements"
+        - "Design architecture"
+        - "Identify dependencies"
+    - name: "implement"
+      objectives:
+        - "Write code"
+        - "Follow TypeScript standards"
+        - "Use singleton patterns"
+    - name: "test"
+      objectives:
+        - "Write unit tests"
+        - "Write integration tests"
+        - "All tests pass"
+    - name: "document"
+      objectives:
+        - "Update README"
+        - "Add JSDoc comments"
+        - "Update ARCHITECTURE.md"
+  checkpoint_after_stage: true
+
+# Project migration — for moving to new architecture
+migration:
+  description: "Migrate existing project to new architecture"
+  stages:
+    - name: "assess"
+      objectives:
+        - "Inventory current code"
+        - "Identify dependencies"
+        - "Plan migration phases"
+    - name: "migrate"
+      objectives:
+        - "Move code systematically"
+        - "Preserve functionality"
+        - "Update imports"
+    - name: "validate"
+      objectives:
+        - "All tests pass"
+        - "No TypeScript errors"
+        - "Manual smoke test"
+    - name: "cleanup"
+      objectives:
+        - "Remove old code"
+        - "Update documentation"
+        - "Final verification"
+  checkpoint_after_stage: true
+
+# Systematic debugging
+debugging:
+  description: "Systematic debugging workflow"
+  stages:
+    - name: "reproduce"
+      objectives:
+        - "Create minimal repro"
+        - "Document steps"
+        - "Verify bug exists"
+    - name: "diagnose"
+      objectives:
+        - "Identify root cause"
+        - "Review related code"
+        - "Check assumptions"
+    - name: "fix"
+      objectives:
+        - "Implement fix"
+        - "Add regression test"
+        - "Verify fix works"
+    - name: "verify"
+      objectives:
+        - "All tests pass"
+        - "Bug no longer reproduces"
+        - "No side effects"
+  checkpoint_after_stage: true
+
+# API development — for building new API endpoints
+api-development:
+  description: "API endpoint development workflow"
+  stages:
+    - name: "design"
+      objectives:
+        - "Define endpoint contract"
+        - "Design request/response types"
+        - "Plan validation rules"
+    - name: "implement"
+      objectives:
+        - "Create route handler"
+        - "Implement business logic"
+        - "Add input validation"
+    - name: "test"
+      objectives:
+        - "Write unit tests for handler"
+        - "Write integration tests for endpoint"
+        - "Test error cases"
+    - name: "document"
+      objectives:
+        - "Add API documentation"
+        - "Update route table"
+        - "Add usage examples"
+  checkpoint_after_stage: true
+
+# Performance optimization
+performance:
+  description: "Performance optimization workflow"
+  stages:
+    - name: "measure"
+      objectives:
+        - "Establish baseline metrics"
+        - "Identify bottlenecks"
+        - "Set performance targets"
+    - name: "optimize"
+      objectives:
+        - "Implement optimizations"
+        - "Add caching where needed"
+        - "Optimize database queries"
+    - name: "validate"
+      objectives:
+        - "Re-measure against baseline"
+        - "Verify no regressions"
+        - "All tests still pass"
+    - name: "document"
+      objectives:
+        - "Document changes made"
+        - "Record before/after metrics"
+        - "Update monitoring alerts"
+  checkpoint_after_stage: true

@@ -36,6 +36,10 @@
 | `pnpm content:list` | List all articles and their status |
 | **Docker** | |
 | `pnpm docker:optimize` | Audit Dockerfile against 12 best practices (use `/optimize-docker` in Claude) |
+| **RALPH (Multi-Session Loops)** | |
+| `/ralph-checkpoint` | Save current loop state and progress |
+| `/ralph-resume` | Resume work from last checkpoint |
+| `/ralph-status` | Show current loop state and progress |
 | **Getting Started** | |
 | `/help` | List all commands, skills, and agents |
 | `/quickstart` | Interactive first-run walkthrough for new users |
@@ -493,14 +497,16 @@ project/
 ├── CLAUDE.md              # You are here
 ├── CLAUDE.local.md        # Personal overrides (gitignored)
 ├── .claude/
-│   ├── commands/          # Slash commands (/review, /refactor, /worktree, /new-project, etc.)
+│   ├── commands/          # Slash commands (/review, /refactor, /worktree, /ralph-*, etc.)
 │   ├── skills/            # Triggered expertise & scaffolding templates
 │   ├── agents/            # Custom subagents
-│   └── hooks/             # Enforcement scripts (9 hooks: secrets, branch, ports, rybbit, e2e, lint, env-sync, rulecatch)
+│   ├── hooks/             # Enforcement scripts (11 hooks: secrets, branch, ports, rybbit, e2e, lint, env-sync, rulecatch, ralph-*)
+│   └── ralph/             # RALPH loop config and templates
 ├── project-docs/
 │   ├── ARCHITECTURE.md    # System overview & data flow
 │   ├── INFRASTRUCTURE.md  # Deployment & environment details
-│   └── DECISIONS.md       # Why we chose X over Y
+│   ├── DECISIONS.md       # Why we chose X over Y
+│   └── checkpoints/       # RALPH checkpoint storage
 ├── docs/                  # GitHub Pages site
 ├── src/
 │   ├── core/
@@ -515,6 +521,7 @@ project/
 ├── scripts/
 │   ├── db-query.ts        # Test Query Master — index of all dev/test queries
 │   ├── queries/           # Individual query files (dev/test only, NOT production)
+│   ├── ralph/             # RALPH checkpoint helper scripts
 │   ├── build-content.ts   # Markdown → HTML article builder
 │   └── content.config.json # Article registry (source, output, SEO metadata)
 ├── content/               # Markdown source files for articles/posts
@@ -689,6 +696,77 @@ This is the single most powerful pattern for improving Claude's behavior over ti
 Don't just fix bugs — fix the rules that allowed the bug. Every mistake is a missing rule.
 
 **If RuleCatch is installed:** also add the rule as a custom RuleCatch rule so it's monitored automatically across all future sessions. CLAUDE.md rules are suggestions — RuleCatch enforces them.
+
+---
+
+## RALPH Loop Protocol
+
+This project uses RALPH (Read-Analyze-Loop-Persist-Handoff) for multi-session work.
+
+### Active Loop Configuration
+
+Current loops are defined in `.claude/ralph/config.yml`. Common loops:
+
+- **feature-development**: plan → implement → test → document
+- **migration**: assess → migrate → validate → cleanup
+- **debugging**: reproduce → diagnose → fix → verify
+
+### When To Checkpoint
+
+MANDATORY checkpoints:
+- End of work session
+- Before major refactors
+- After completing loop stage
+- When approaching token limit (check `/context`)
+
+AUTO checkpoints trigger when:
+- 500+ lines changed (configurable)
+- 30+ minutes elapsed (configurable)
+
+### Checkpoint Protocol
+
+**Creating checkpoint:**
+1. Run `/ralph-checkpoint`
+2. Summarize work completed
+3. Note any blockers or open questions
+4. Checkpoint saves to `project-docs/checkpoints/CURRENT_STATE.md`
+
+**Resuming from checkpoint:**
+1. Run `/ralph-resume` at session start
+2. Verify file tree integrity
+3. Review completed work summary
+4. Confirm next stage objectives
+5. Execute next stage
+
+**Checking status:**
+1. Run `/ralph-status` anytime
+2. Shows current loop, stage, progress
+3. Displays next objectives and blockers
+
+### Checkpoint Contents
+
+Every checkpoint includes:
+1. Current loop name and stage number
+2. Completed work summary
+3. Next stage objectives
+4. File tree state hash (integrity check)
+5. Open questions/blockers
+6. Key decisions made
+
+### Resume Safety
+
+Before resuming:
+- File tree hash is verified
+- Blockers are highlighted
+- Checkpoint age is checked (warn if > 7 days)
+- Manual changes since checkpoint are flagged
+
+### Integration With Other Rules
+
+RALPH works alongside existing rules:
+- Checkpoints happen AFTER hooks run
+- Status checks use same file tree as hooks
+- Resume verifies same integrity as git safety
 
 ---
 
