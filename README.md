@@ -794,21 +794,21 @@ Generates a complete microservice following the server/handlers/adapters separat
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                    YOUR SERVICE                      │
+│                    YOUR SERVICE                     │
 ├─────────────────────────────────────────────────────┤
-│  SERVER (server.ts)                                  │
-│  → Express/Fastify entry point, defines routes       │
-│  → NEVER contains business logic                     │
-│                       │                              │
-│                       ▼                              │
-│  HANDLERS (handlers/)                                │
-│  → Business logic lives here                         │
-│  → One file per domain                               │
-│                       │                              │
-│                       ▼                              │
-│  ADAPTERS (adapters/)                                │
-│  → External service wrappers                         │
-│  → Database, APIs, etc.                              │
+│  SERVER (server.ts)                                 │
+│  → Express/Fastify entry point, defines routes      │
+│  → NEVER contains business logic                    │
+│                       │                             │
+│                       ▼                             │
+│  HANDLERS (handlers/)                               │
+│  → Business logic lives here                        │
+│  → One file per domain                              │
+│                       │                             │
+│                       ▼                             │
+│  ADAPTERS (adapters/)                               │
+│  → External service wrappers                        │
+│  → Database, APIs, etc.                             │
 └─────────────────────────────────────────────────────┘
 ```
 
